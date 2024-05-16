@@ -40,12 +40,8 @@
         tools:ignore="UseSwitchCompatOrMaterialXml">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dark_theme"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="16dp"
-            />
+            style="@style/SettingsItemText"
+            android:text="@string/dark_theme" />
 
         <Switch
             android:layout_width="wrap_content"
@@ -62,18 +58,13 @@
         tools:ignore="UseSwitchCompatOrMaterialXml">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/share_application"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="16dp"/>
+            style="@style/SettingsItemText"
+            android:text="@string/share_application" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
+            style="@style/SettingsItemImage"
             android:src="@drawable/ic_share"
-            android:layout_marginEnd="16dp"/>
+            tools:ignore="ContentDescription"/>
 
 
     </FrameLayout>
@@ -84,18 +75,13 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/write_to_support"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/button_margin"/>
+            style="@style/SettingsItemText"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
+            style="@style/SettingsItemImage"
             android:src="@drawable/ic_support_call"
-            android:layout_marginEnd="@dimen/button_margin"/>
+            tools:ignore="ContentDescription" />
 
 
     </FrameLayout>
@@ -105,20 +91,13 @@
         android:layout_height="48dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_agreement"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="16dp"/>
+            style="@style/SettingsItemText"
+            android:text="@string/user_agreement" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
+            style="@style/SettingsItemImage"
             android:src="@drawable/ic_arrow_forward"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="TODO" />
-
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
