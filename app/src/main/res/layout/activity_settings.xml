@@ -29,7 +29,8 @@
             app:icon="@drawable/ic_arrow_back"
             app:iconGravity="textStart"
             app:iconPadding="5dp"
-            app:iconTint="@color/black"/>
+            app:iconTint="@color/black"
+            android:fontFamily="@font/ys_display_medium"/>
 
 
     </LinearLayout>

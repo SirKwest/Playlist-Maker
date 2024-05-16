@@ -15,6 +15,7 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/icon_margin</item>
         <item name="iconTint">@color/black</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
     </style>
     <style name="SettingsItemText">
         <item name="android:layout_width">wrap_content</item>
