@@ -17,11 +17,17 @@
         <item name="iconTint">@color/black</item>
         <item name="fontFamily">@font/ys_display_medium</item>
     </style>
+    <style name="SettingsSwitch">
+        <item name="colorControlActivated">@color/yp_blue</item>
+        <item name="colorSwitchThumbNormal">@color/grey</item>
+        <item name="android:colorForeground">@color/smoke</item>
+    </style>
     <style name="SettingsItemText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">start|center_vertical</item>
         <item name="android:layout_marginStart">@dimen/button_margin</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
     <style name="SettingsItemImage">
         <item name="android:layout_width">wrap_content</item>
