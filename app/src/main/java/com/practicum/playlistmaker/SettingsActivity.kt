@@ -1,18 +1,35 @@
 package com.practicum.playlistmaker
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.FrameLayout
-import android.widget.ImageView
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings);
+        val swDarkTheme = findViewById<SwitchCompat>(R.id.theme_switcher);
 
-        val backButton = findViewById<ImageView>(R.id.arrow_back);
+        val currentNightMode = baseContext.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK);
+        when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_NO -> { swDarkTheme.setChecked(false); } // Night mode is not active, we're using the light theme.
+            Configuration.UI_MODE_NIGHT_YES -> { swDarkTheme.setChecked(true); } // Night mode is active, we're using dark theme.
+        }
+
+        swDarkTheme.setOnClickListener {
+            if (swDarkTheme.isChecked)
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
+        val backButton = findViewById<Toolbar>(R.id.settings_toolbar);
         backButton.setOnClickListener { super.finish() }
 
         val shareButton = findViewById<FrameLayout>(R.id.share_button);
