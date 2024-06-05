@@ -11,9 +11,13 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
     private var searchValue = ""
+
+    private lateinit var searchField : EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -21,7 +25,7 @@ class SearchActivity : AppCompatActivity() {
         val backButton = findViewById<Toolbar>(R.id.search_toolbar);
         backButton.setOnClickListener { super.finish() }
 
-        val searchField = findViewById<EditText>(R.id.search_field);
+        searchField = findViewById(R.id.search_field)
         searchField.requestFocus();
 
         val clearButton = findViewById<ImageView>(R.id.cancel_button)
@@ -31,11 +35,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val isSearchFieldEmpty = p0.isNullOrEmpty();
-                when (isSearchFieldEmpty) {
-                    true -> { clearButton.visibility = View.INVISIBLE}
-                    false -> { clearButton.visibility = View.VISIBLE }
-                }
+                clearButton.isVisible = !p0.isNullOrEmpty();
                 searchValue = p0.toString();
             }
 
@@ -57,18 +57,23 @@ class SearchActivity : AppCompatActivity() {
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("SEARCH_TEXT", searchValue)
+        outState.putString(SEARCH_FIELD_DATA_TAG, searchValue)
     }
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchValue = savedInstanceState.getString("SEARCH_TEXT", "")
+        searchValue = savedInstanceState.getString(SEARCH_FIELD_DATA_TAG, SEARCH_FIELD_DEFAULT_VALUE)
         if (searchValue.isEmpty())
             return
-        val searchBar = findViewById<EditText>(R.id.search_field)
-        searchBar.setText(searchValue)
-        searchBar.setSelection(searchValue.length)
+
+        searchField.setText(searchValue)
+        searchField.setSelection(searchValue.length)
         /* Show keyboard after restoring instance */
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         /* End */
+    }
+
+    companion object {
+        const val SEARCH_FIELD_DATA_TAG = "SEARCH_TEXT"
+        const val SEARCH_FIELD_DEFAULT_VALUE = ""
     }
 }
