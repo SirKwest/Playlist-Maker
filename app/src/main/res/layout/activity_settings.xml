@@ -9,13 +9,8 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/settings_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         app:title="@string/settings"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        android:textColor="@color/black"
-        android:fontFamily="@font/ys_display_medium"
-        android:textFontWeight="500">
+        style="@style/Toolbar">
 
     </androidx.appcompat.widget.Toolbar>
 

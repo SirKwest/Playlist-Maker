@@ -14,5 +14,4 @@
     <string name="email_text_placeholder">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="user_agreement_link">https://yandex.ru/legal/practicum_offer</string>
     <string name="hello_library">Привет, медиатека!</string>
-    <string name="hello_search">Привет, настройки!</string>
 </resources>

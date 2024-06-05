@@ -17,10 +17,7 @@ class SettingsActivity : AppCompatActivity() {
         val swDarkTheme = findViewById<SwitchCompat>(R.id.theme_switcher);
 
         val currentNightMode = baseContext.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK);
-        when (currentNightMode) {
-            Configuration.UI_MODE_NIGHT_NO -> { swDarkTheme.setChecked(false); } // Night mode is not active, we're using the light theme.
-            Configuration.UI_MODE_NIGHT_YES -> { swDarkTheme.setChecked(true); } // Night mode is active, we're using dark theme.
-        }
+        swDarkTheme.setChecked(currentNightMode == Configuration.UI_MODE_NIGHT_YES);
 
         swDarkTheme.setOnClickListener {
             if (swDarkTheme.isChecked)
