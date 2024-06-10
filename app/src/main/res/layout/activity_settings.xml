@@ -6,33 +6,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:ignore="UseCompoundDrawables"
-        android:layout_marginStart="16dp">
 
-        <ImageView
-            android:id="@+id/arrow_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_arrow_back"
-            tools:ignore="ContentDescription" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settings_toolbar"
+        app:title="@string/settings"
+        style="@style/Toolbar">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/settings"
-            android:textSize="26sp"
-            app:icon="@drawable/ic_arrow_back"
-            app:iconGravity="textStart"
-            app:iconPadding="5dp"
-            app:iconTint="@color/black"/>
-
-
-    </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -40,85 +20,69 @@
         tools:ignore="UseSwitchCompatOrMaterialXml">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dark_theme"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="16dp"
-            />
+            style="@style/SettingsItemText"
+            android:text="@string/dark_theme" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/theme_switcher"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_gravity="end"/>
+            android:layout_gravity="end"
+            android:theme="@style/SettingsSwitch"/>
 
 
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/share_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal"
         tools:ignore="UseSwitchCompatOrMaterialXml">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/share_application"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="16dp"/>
+            style="@style/SettingsItemText"
+            android:text="@string/share_application" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
+            style="@style/SettingsItemImage"
             android:src="@drawable/ic_share"
-            android:layout_marginEnd="16dp"/>
+            tools:ignore="ContentDescription"/>
 
 
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/support_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/write_to_support"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/button_margin"/>
+            style="@style/SettingsItemText"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
+            style="@style/SettingsItemImage"
             android:src="@drawable/ic_support_call"
-            android:layout_marginEnd="@dimen/button_margin"/>
+            tools:ignore="ContentDescription" />
 
 
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/user_agreement_button"
         android:layout_width="match_parent"
         android:layout_height="48dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_agreement"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="16dp"/>
+            style="@style/SettingsItemText"
+            android:text="@string/user_agreement" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
+            style="@style/SettingsItemImage"
             android:src="@drawable/ic_arrow_forward"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="TODO" />
-
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
