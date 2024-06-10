@@ -5,10 +5,9 @@
         <item name="colorAccent">@color/white</item>
         <item name="colorSecondary">@color/yp_blue</item>
         <item name="colorOnSecondary">@color/smoke</item>
-        <item name="android:navigationBarColor">@color/black_blue</item>
         <item name="colorPrimarySurface">@color/grey</item>
         <item name="hintTextAppearance">@color/grey</item>
-        <item name="colorSurfaceVariant">@color/grey</item>
+        <item name="colorSurfaceVariant">@color/black</item>
         <item name="colorPrimaryInverse">@color/black_blue</item>
         <item name="colorButtonNormal">@color/dark_grey</item>
     </style>

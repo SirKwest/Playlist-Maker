@@ -8,12 +8,10 @@
 
     <ImageView
         android:id="@+id/album_image"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="12dp"
-        android:scaleType="fitCenter"
-        tools:srcCompat="@drawable/ic_library"
         tools:ignore="contentDescription"/>
 
     <LinearLayout
@@ -25,12 +23,16 @@
 
         <TextView
             android:id="@+id/track_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:gravity="start|center_vertical"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textColor="?attr/colorSurfaceVariant"
+            android:textSize="@dimen/text_title_size"
+            android:ellipsize="end"
+            android:maxLines="1"
+            style="@style/TrackAttributeStyle"
+            tools:text="@string/track_name_placeholder"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,34 +46,34 @@
                 android:id="@+id/artist_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="11sp" />
+                style="@style/TrackAttributeStyle"
+                tools:text="@string/artist_name_placeholder"/>
 
-            <TextView
-                android:id="@+id/text_spacer"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="11sp" />
+                android:src="@drawable/ic_dot"
+                app:tint="?attr/colorPrimarySurface"
+                tools:ignore="contentDescription"/>
 
             <TextView
                 android:id="@+id/track_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="11sp" />
+                style="@style/TrackAttributeStyle"
+                tools:text="@string/track_time_placeholder"/>
 
         </LinearLayout>
 
     </LinearLayout>
 
     <ImageView
-        android:layout_width="6dp"
-        android:layout_height="6dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="12dp"
-        android:backgroundTint="?attr/colorSecondaryVariant"
+        app:tint="?attr/colorPrimarySurface"
         app:srcCompat="@drawable/ic_arrow_forward"
         tools:ignore="contentDescription"/>
 
