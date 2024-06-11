@@ -22,7 +22,7 @@ class TrackViewHolder(trackView: View): RecyclerView.ViewHolder(trackView) {
             .load(model.artworkUrl100)
             .fitCenter()
             .placeholder(R.drawable.track_placeholder)
-            .transform(RoundedCorners(80)) // Figma's layout of screen does not have any rounded corners at album image, so value is totally random
+            .transform(RoundedCorners(4))
             .into(albumImage)
     }
 }
