@@ -1,15 +1,21 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.res.Configuration
+import android.media.Image
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,11 +37,21 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchField : EditText
     private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerImage: ImageView
+    private lateinit var recyclerMessage: TextView
+    private lateinit var refreshButton: Button
+
+    private var isDarkTheme: Boolean = false
     private val apiClient: ItunesApiClient = ItunesApiClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        refreshButton = findViewById(R.id.refresh_button)
+        recyclerImage = findViewById(R.id.empty_search_image)
+        recyclerMessage = findViewById(R.id.empty_search_text)
+
+        isDarkTheme = baseContext.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
         val backButton = findViewById<Toolbar>(R.id.search_toolbar);
         backButton.setOnClickListener { super.finish() }
@@ -61,7 +77,8 @@ class SearchActivity : AppCompatActivity() {
         searchField.addTextChangedListener(searchFieldTextWatcher);
 
         clearButton.setOnClickListener {
-            searchField.setText("");
+            searchField.setText("")
+            recyclerView.adapter = TrackListAdapter(emptyList())
             /* Hide keyboard after clearing input */
             val view = this.currentFocus
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -75,27 +92,12 @@ class SearchActivity : AppCompatActivity() {
 
         searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val tracks = apiClient.getTrackList(searchField.text.toString())
-                tracks.enqueue(object : Callback<ItunesResponse> {
-                    override fun onResponse(
-                        call: Call<ItunesResponse>,
-                        response: Response<ItunesResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            recyclerView.adapter = TrackListAdapter(response.body()!!.results)
-                        } else {
-                            val errorJson = response.errorBody()?.string()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
-                        t.printStackTrace()
-                    }
-
-                })
+                search()
             }
             false
         }
+
+        refreshButton.setOnClickListener { search() }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -112,6 +114,53 @@ class SearchActivity : AppCompatActivity() {
         /* Show keyboard after restoring instance */
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         /* End */
+    }
+
+    private fun search() {
+        val tracks = apiClient.getTrackList(searchField.text.toString())
+        tracks.enqueue(object : Callback<ItunesResponse> {
+            override fun onResponse(
+                call: Call<ItunesResponse>,
+                response: Response<ItunesResponse>
+            ) {
+                if (response.isSuccessful) {
+                    if (response.body()?.resultsCount?.compareTo(1)!! >= 0) {
+                        recyclerView.adapter = TrackListAdapter(response.body()!!.results)
+                        recyclerImage.setImageResource(0)
+                        recyclerMessage.text = null
+                    } else {
+                        recyclerMessage.text = getString(R.string.empty_search)
+                        if (isDarkTheme) {
+                            recyclerImage.setImageResource(R.drawable.empty_search_dark)
+                        } else {
+                            recyclerImage.setImageResource(R.drawable.empty_search_light)
+                        }
+                        refreshButton.visibility = View.GONE
+                    }
+
+                } else {
+                    val errorJson = response.errorBody()?.string()
+                    refreshButton.visibility = View.VISIBLE
+                    if (isDarkTheme) {
+                        recyclerImage.setImageResource(R.drawable.connection_failed_dark)
+                    } else {
+                        recyclerImage.setImageResource(R.drawable.connection_failed_light)
+                    }
+                    recyclerMessage.text = getString(R.string.connection_failed)
+                }
+            }
+
+            override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
+                refreshButton.visibility = View.VISIBLE
+                if (isDarkTheme) {
+                    recyclerImage.setImageResource(R.drawable.connection_failed_dark)
+                } else {
+                    recyclerImage.setImageResource(R.drawable.connection_failed_light)
+                }
+                recyclerMessage.text = getString(R.string.connection_failed)
+            }
+
+        })
     }
 
     companion object {

@@ -54,8 +54,30 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
     </androidx.recyclerview.widget.RecyclerView>
+
+    <ImageView
+        android:id="@+id/empty_search_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="contentDescription" />
+
+    <TextView
+        android:id="@+id/empty_search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    
+    <Button
+        android:id="@+id/refresh_button"
+        android:text="@string/Refresh"
+        android:layout_height="36dp"
+        android:layout_width="91dp"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+        android:fontFamily="@font/ys_display_medium"
+        android:visibility="gone"
+        android:textFontWeight="500"/>
 
 </LinearLayout>
