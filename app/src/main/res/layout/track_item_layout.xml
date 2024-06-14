@@ -1,0 +1,81 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="61dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/album_image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="12dp"
+        tools:ignore="contentDescription"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/track_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="start|center_vertical"
+            android:textColor="?attr/colorSurfaceVariant"
+            android:textSize="@dimen/text_title_size"
+            android:ellipsize="end"
+            android:maxLines="1"
+            style="@style/TrackAttributeStyle"
+            tools:text="@string/track_name_placeholder"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="14dp"
+            android:gravity="start|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/artist_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TrackAttributeStyle"
+                tools:text="@string/artist_name_placeholder"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dot"
+                app:tint="?attr/colorPrimarySurface"
+                tools:ignore="contentDescription"/>
+
+            <TextView
+                android:id="@+id/track_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TrackAttributeStyle"
+                tools:text="@string/track_time_placeholder"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
+        app:tint="?attr/colorPrimarySurface"
+        app:srcCompat="@drawable/ic_arrow_forward"
+        tools:ignore="contentDescription"/>
+
+
+</LinearLayout>
