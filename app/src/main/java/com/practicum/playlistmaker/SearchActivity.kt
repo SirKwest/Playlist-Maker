@@ -79,6 +79,9 @@ class SearchActivity : AppCompatActivity() {
         clearButton.setOnClickListener {
             searchField.setText("")
             recyclerView.adapter = TrackListAdapter(emptyList())
+            recyclerImage.setImageResource(0)
+            recyclerMessage.text = null
+            refreshButton.visibility = View.GONE
             /* Hide keyboard after clearing input */
             val view = this.currentFocus
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
