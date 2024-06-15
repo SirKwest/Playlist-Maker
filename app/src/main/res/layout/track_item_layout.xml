@@ -58,8 +58,7 @@
                 android:id="@+id/track_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TrackAttributeStyle"
-                tools:text="@string/track_time_placeholder"/>
+                style="@style/TrackAttributeStyle"/>
 
         </LinearLayout>
 
