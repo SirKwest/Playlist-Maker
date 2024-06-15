@@ -34,7 +34,7 @@
             style="@style/TrackAttributeStyle"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="14dp"
@@ -43,9 +43,9 @@
 
             <TextView
                 android:id="@+id/artist_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:maxWidth="250dp"
+                android:layout_weight="1"
                 style="@style/TrackAttributeStyle"/>
 
             <ImageView
@@ -59,7 +59,7 @@
                 android:id="@+id/track_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TrackAttributeStyle"/>
+                style="@style/TrackAttributeTimeStyle"/>
 
         </LinearLayout>
 
