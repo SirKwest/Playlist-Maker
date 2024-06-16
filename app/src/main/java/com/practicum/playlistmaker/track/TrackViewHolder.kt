@@ -17,7 +17,6 @@ class TrackViewHolder(trackView: View): RecyclerView.ViewHolder(trackView) {
     private val albumImage: ImageView = trackView.findViewById(R.id.album_image)
 
     fun bind(model: Track) {
-        this.setIsRecyclable(false)
         trackName.text = model.trackName
         artistName.text = model.artistName
         val time = model.trackTimeMillis.toLong()
@@ -29,5 +28,6 @@ class TrackViewHolder(trackView: View): RecyclerView.ViewHolder(trackView) {
             .placeholder(R.drawable.track_placeholder)
             .transform(RoundedCorners(4))
             .into(albumImage)
+        artistName.requestLayout()
     }
 }
