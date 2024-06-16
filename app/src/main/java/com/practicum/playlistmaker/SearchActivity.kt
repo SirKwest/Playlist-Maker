@@ -93,15 +93,6 @@ class SearchActivity : AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 recyclerView.adapter?.notifyDataSetChanged()
-                /*if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val lm = (recyclerView.layoutManager as LinearLayoutManager)
-                    val firstPosition = lm.findFirstVisibleItemPosition();
-                    val lastPosition = lm.findLastVisibleItemPosition()
-                    for (i in firstPosition..lastPosition) {
-                        recyclerView.adapter?.notifyItemChanged(i)
-                    }
-
-                }*/
             }
         })
 
