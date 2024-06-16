@@ -89,6 +89,22 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.search_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                recyclerView.adapter?.notifyDataSetChanged()
+                /*if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val lm = (recyclerView.layoutManager as LinearLayoutManager)
+                    val firstPosition = lm.findFirstVisibleItemPosition();
+                    val lastPosition = lm.findLastVisibleItemPosition()
+                    for (i in firstPosition..lastPosition) {
+                        recyclerView.adapter?.notifyItemChanged(i)
+                    }
+
+                }*/
+            }
+        })
+
         searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 search()
