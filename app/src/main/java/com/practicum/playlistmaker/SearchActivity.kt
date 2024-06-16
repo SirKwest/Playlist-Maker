@@ -89,13 +89,6 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.search_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                recyclerView.adapter?.notifyDataSetChanged()
-            }
-        })
-
         searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 search()
