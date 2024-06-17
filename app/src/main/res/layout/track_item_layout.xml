@@ -31,11 +31,10 @@
             android:textSize="@dimen/text_title_size"
             android:ellipsize="end"
             android:maxLines="1"
-            style="@style/TrackAttributeStyle"
-            tools:text="@string/track_name_placeholder"/>
+            style="@style/TrackAttributeStyle"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="14dp"
@@ -44,10 +43,10 @@
 
             <TextView
                 android:id="@+id/artist_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                style="@style/TrackAttributeStyle"
-                tools:text="@string/artist_name_placeholder"/>
+                android:layout_weight="1"
+                style="@style/TrackAttributeStyle"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -60,8 +59,7 @@
                 android:id="@+id/track_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TrackAttributeStyle"
-                tools:text="@string/track_time_placeholder"/>
+                style="@style/TrackAttributeTimeStyle"/>
 
         </LinearLayout>
 
