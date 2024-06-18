@@ -17,6 +17,18 @@ class TrackListAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<T
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
+        holder.itemView.setOnClickListener { itemClickListener.onItemClick(position) }
     }
 
+    fun getTrackByPosition(position: Int) : Track {
+        return tracks[position]
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        itemClickListener = listener
+    }
+    private lateinit var itemClickListener: OnItemClickListener
 }

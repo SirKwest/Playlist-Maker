@@ -51,12 +51,40 @@
             app:tint="?attr/hintTextAppearance" />
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/search_history_title"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/you_searched"
+        android:gravity="center"
+        android:fontFamily="@font/ys_display_medium"
+        android:textSize="19sp"
+        android:textColor="?attr/colorPrimaryInverse"
+        android:layout_marginTop="24dp"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="1">
     </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/clear_history_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cornerRadius="16dp"
+        android:textAllCaps="false"
+        android:backgroundTint="?attr/colorPrimaryInverse"
+        android:textColor="?attr/colorAccent"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/ys_display_medium"
+        android:text="@string/clear_history"
+        android:letterSpacing="0.0"
+        android:textSize="14sp"/>
 
     <ImageView
         android:id="@+id/empty_search_image"
@@ -74,11 +102,12 @@
         android:gravity="center"
         android:textColor="?attr/colorPrimaryInverse"
         android:textSize="19sp"
-        android:fontFamily="@font/ys_display_medium"/>
+        android:fontFamily="@font/ys_display_medium"
+        android:visibility="gone"/>
     
     <Button
         android:id="@+id/refresh_button"
-        android:text="@string/Refresh"
+        android:text="@string/refresh"
         android:layout_height="36dp"
         android:layout_width="96dp"
         android:layout_gravity="center"

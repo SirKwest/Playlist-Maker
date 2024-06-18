@@ -12,43 +12,26 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         sharedPreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-        switchTheme((getCurrentTheme()!!))
+        switchTheme(isDarkTheme())
     }
 
-    private fun getCurrentTheme(): String? {
-        return sharedPreferences.getString(THEME_NAME, ThemeValues.OS_THEME.toString())
+    fun isDarkTheme(): Boolean {
+        return sharedPreferences.getBoolean(THEME_KEY, false)
     }
 
-    private fun switchTheme(selectedTheme: String) {
-        sharedPreferences.edit { putString(THEME_NAME, selectedTheme) }
-        when (selectedTheme) {
-            ThemeValues.DARK_THEME.toString() -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    fun switchTheme(isDarkThemeEnabled: Boolean) {
+        sharedPreferences.edit { putBoolean(THEME_KEY, isDarkThemeEnabled) }
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkThemeEnabled) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
             }
-
-            ThemeValues.LIGHT_THEME.toString() -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
-            else -> {}
-        }
-    }
-
-    fun switchTheme(isDarkTheme: Boolean) {
-        if (isDarkTheme) {
-            this.switchTheme(ThemeValues.DARK_THEME.toString())
-        } else {
-            this.switchTheme(ThemeValues.LIGHT_THEME.toString())
-        }
+        )
     }
 
     companion object {
-        const val PREFERENCES_NAME = "preferences_name"
-        const val THEME_NAME = "selected_theme"
-        enum class ThemeValues {
-            DARK_THEME,
-            LIGHT_THEME,
-            OS_THEME
-        }
+        const val PREFERENCES_NAME = "theme_preferences"
+        const val THEME_KEY = "dark_theme"
     }
 }
