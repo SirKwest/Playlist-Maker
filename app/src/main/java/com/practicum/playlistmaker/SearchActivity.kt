@@ -212,7 +212,20 @@ class SearchActivity : AppCompatActivity() {
                 refreshButton.visibility = View.GONE
                 clearHistoryButton.visibility = View.VISIBLE
                 searchHistoryTitle.visibility = View.VISIBLE
-                recyclerView.adapter = TrackListAdapter(searchHistory.get())
+                val historyAdapter = TrackListAdapter(searchHistory.get())
+                historyAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val item = historyAdapter.getTrackByPosition(position)
+                        searchHistory.add(item)
+                        Toast.makeText(
+                            this@SearchActivity,
+                            "Track: " + item.artistName + " - " + item.trackName,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        historyAdapter.notifyDataSetChanged()
+                    }
+                })
+                recyclerView.adapter = historyAdapter
             }
             else -> {
                 recyclerImage.setImageResource(0)
