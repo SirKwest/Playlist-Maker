@@ -52,7 +52,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton = findViewById(R.id.clear_history_button)
         searchHistoryTitle = findViewById(R.id.search_history_title)
-        searchHistory = SearchHistory(getSharedPreferences(SearchHistory.PREFERENCES_NAME, MODE_PRIVATE))
+        searchHistory = SearchHistory((applicationContext as App).getSearchPreferences())
 
         val backButton = findViewById<Toolbar>(R.id.search_toolbar);
         backButton.setOnClickListener { super.finish() }
@@ -87,7 +87,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             searchField.setText("")
-            recyclerView.adapter = TrackListAdapter(arrayListOf())
+            recyclerView.adapter = TrackListAdapter(emptyList())
             recyclerImage.setImageResource(0)
             recyclerMessage.text = null
             refreshButton.visibility = View.GONE
@@ -145,7 +145,7 @@ class SearchActivity : AppCompatActivity() {
                     settingVisualElements(ScreenStates.CONNECTION_ISSUES)
                     return
                 }
-                if (response.body()?.results?.isEmpty() == true) {
+                if (response.body() == null || response.body()!!.results.isNullOrEmpty() == true) {
                     settingVisualElements(ScreenStates.EMPTY_RESULTS)
                     return
                 }

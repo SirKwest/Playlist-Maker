@@ -7,20 +7,26 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
 class App : Application() {
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var themePreferences: SharedPreferences
+    private lateinit var searchPreferences: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
-        sharedPreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        themePreferences = getSharedPreferences(THEME_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        searchPreferences = getSharedPreferences(SearchHistory.PREFERENCES_NAME, Context.MODE_PRIVATE)
         switchTheme(isDarkTheme())
     }
 
+    fun getSearchPreferences(): SharedPreferences {
+        return searchPreferences
+    }
+
     fun isDarkTheme(): Boolean {
-        return sharedPreferences.getBoolean(THEME_KEY, false)
+        return themePreferences.getBoolean(THEME_KEY, false)
     }
 
     fun switchTheme(isDarkThemeEnabled: Boolean) {
-        sharedPreferences.edit { putBoolean(THEME_KEY, isDarkThemeEnabled) }
+        themePreferences.edit { putBoolean(THEME_KEY, isDarkThemeEnabled) }
         AppCompatDelegate.setDefaultNightMode(
             if (isDarkThemeEnabled) {
                 AppCompatDelegate.MODE_NIGHT_YES
@@ -31,7 +37,7 @@ class App : Application() {
     }
 
     companion object {
-        const val PREFERENCES_NAME = "theme_preferences"
+        const val THEME_PREFERENCES_NAME = "theme_preferences"
         const val THEME_KEY = "dark_theme"
     }
 }
