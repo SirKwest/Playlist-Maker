@@ -16,7 +16,3 @@ class ItunesApiClient {
         return itunesService.search(query)
     }
 }
-enum class RequestIssues {
-    CONNECTION,
-    EMPTY_RESULTS
-}

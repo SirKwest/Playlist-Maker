@@ -9,22 +9,19 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings);
-        val swDarkTheme = findViewById<SwitchCompat>(R.id.theme_switcher);
+        val swDarkTheme = findViewById<SwitchMaterial>(R.id.theme_switcher);
 
         val currentNightMode = baseContext.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK);
         swDarkTheme.setChecked(currentNightMode == Configuration.UI_MODE_NIGHT_YES);
 
-        swDarkTheme.setOnClickListener {
-            if (swDarkTheme.isChecked)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
+        swDarkTheme.setOnCheckedChangeListener { _, isChecked -> (applicationContext as App).switchTheme(isChecked) }
 
         val backButton = findViewById<Toolbar>(R.id.settings_toolbar);
         backButton.setOnClickListener { super.finish() }

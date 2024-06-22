@@ -23,7 +23,7 @@
             style="@style/SettingsItemText"
             android:text="@string/dark_theme" />
 
-        <androidx.appcompat.widget.SwitchCompat
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/theme_switcher"
             android:layout_width="wrap_content"
             android:layout_height="48dp"

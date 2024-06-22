@@ -16,5 +16,7 @@
     <string name="hello_library">Привет, медиатека!</string>
     <string name="connection_failed">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="empty_search">Ничего не нашлось</string>
-    <string name="Refresh">Обновить</string>
+    <string name="refresh">Обновить</string>
+    <string name="you_searched">Вы искали</string>
+    <string name="clear_history">Очистить историю</string>
 </resources>
