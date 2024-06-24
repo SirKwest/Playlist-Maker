@@ -227,6 +227,7 @@ class SearchActivity : AppCompatActivity() {
                             "Track: " + item.artistName + " - " + item.trackName,
                             Toast.LENGTH_SHORT
                         ).show()
+                        historyAdapter.notifyDataSetChanged()
                         val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
                         playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
                         this@SearchActivity.startActivity(playerActivityIntent)
