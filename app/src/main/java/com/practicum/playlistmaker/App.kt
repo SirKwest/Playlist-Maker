@@ -10,8 +10,6 @@ class App : Application() {
     private lateinit var themePreferences: SharedPreferences
     private lateinit var searchPreferences: SharedPreferences
 
-    private var playerActivityTurnedOn: Boolean = false
-
     override fun onCreate() {
         super.onCreate()
         themePreferences = getSharedPreferences(THEME_PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -25,14 +23,6 @@ class App : Application() {
 
     fun isDarkTheme(): Boolean {
         return themePreferences.getBoolean(THEME_KEY, false)
-    }
-
-    public fun playerActivityResumed() {
-        playerActivityTurnedOn = true
-    }
-
-    public fun playerActivityPaused() {
-        playerActivityTurnedOn = false
     }
 
     fun switchTheme(isDarkThemeEnabled: Boolean) {

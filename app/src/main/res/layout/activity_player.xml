@@ -66,9 +66,10 @@
 
     <ImageView
         android:id="@+id/play_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/player_play_button_side"
+        android:layout_height="@dimen/player_play_button_side"
         android:layout_marginTop="16dp"
+        android:padding="8dp"
         android:src="@drawable/ic_play"
 
         app:layout_constraintStart_toStartOf="@+id/left_guideline"
@@ -78,8 +79,8 @@
 
     <ImageView
         android:id="@+id/add_to_button"
-        android:layout_width="51dp"
-        android:layout_height="51dp"
+        android:layout_width="@dimen/player_add_button_size"
+        android:layout_height="@dimen/player_add_button_size"
         android:src="@drawable/add_to_library"
 
         app:layout_constraintStart_toStartOf="@+id/left_guideline"
@@ -124,7 +125,7 @@
             android:id="@+id/track_time_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             android:text="@string/duration"
             style="@style/PlayerTrackDescriptions"
 
@@ -134,7 +135,7 @@
             android:id="@+id/track_time_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             android:textColor="?attr/colorPrimary"
             android:gravity="end"
             style="@style/PlayerTrackDescriptions"
@@ -153,7 +154,7 @@
             android:id="@+id/album_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             android:text="@string/album"
             style="@style/PlayerTrackDescriptions"
 
@@ -163,7 +164,7 @@
             android:id="@+id/album_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             android:textColor="?attr/colorPrimary"
             android:gravity="end"
             style="@style/PlayerTrackDescriptions"
@@ -183,7 +184,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/year"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             style="@style/PlayerTrackDescriptions"
 
             app:layout_constraintBottom_toTopOf="@+id/genre_label"
@@ -192,7 +193,7 @@
             android:id="@+id/release_year_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             android:textColor="?attr/colorPrimary"
             android:gravity="end"
             style="@style/PlayerTrackDescriptions"
@@ -212,7 +213,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/genre"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             style="@style/PlayerTrackDescriptions"
 
             app:layout_constraintBottom_toTopOf="@+id/country_label"
@@ -221,7 +222,7 @@
             android:id="@+id/genre_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             android:textColor="?attr/colorPrimary"
             android:gravity="end"
             style="@style/PlayerTrackDescriptions"
@@ -241,7 +242,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/country"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             style="@style/PlayerTrackDescriptions"
 
             app:layout_constraintBottom_toBottomOf="parent"
@@ -251,7 +252,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/PlayerTrackDescriptions"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/player_track_description_margin_bottom"
             android:textColor="?attr/colorPrimary"
             android:gravity="end"
 
