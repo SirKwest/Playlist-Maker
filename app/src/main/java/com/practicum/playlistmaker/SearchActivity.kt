@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.practicum.playlistmaker.api.ItunesApiClient
 import com.practicum.playlistmaker.api.ItunesResponse
 import com.practicum.playlistmaker.track.TrackListAdapter
@@ -160,6 +162,9 @@ class SearchActivity : AppCompatActivity() {
                             "Track: " + item.artistName + " - " + item.trackName,
                             Toast.LENGTH_SHORT
                         ).show()
+                        val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                        playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
+                        this@SearchActivity.startActivity(playerActivityIntent)
                     }
                 })
                 settingVisualElements(ScreenStates.DEFAULT)
@@ -223,6 +228,9 @@ class SearchActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                         historyAdapter.notifyDataSetChanged()
+                        val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                        playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
+                        this@SearchActivity.startActivity(playerActivityIntent)
                     }
                 })
                 recyclerView.adapter = historyAdapter
