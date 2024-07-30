@@ -3,6 +3,8 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -29,6 +31,11 @@ import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
     private var searchValue = ""
+
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val searchRunnable = Runnable { search() }
 
     private lateinit var searchField: EditText
     private lateinit var recyclerView: RecyclerView
@@ -79,6 +86,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 clearButton.isVisible = !p0.isNullOrEmpty();
                 searchValue = p0.toString();
+                searchDebounce()
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -136,6 +144,20 @@ class SearchActivity : AppCompatActivity() {
         /* End */
     }
 
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     private fun search() {
         val tracks = apiClient.getTrackList(searchField.text.toString())
         tracks.enqueue(object : Callback<ItunesResponse> {
@@ -155,6 +177,9 @@ class SearchActivity : AppCompatActivity() {
                 recyclerView.adapter = tracksAdapter
                 tracksAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
                     override fun onItemClick(position: Int) {
+                        if (!clickDebounce()) {
+                            return
+                        }
                         val item = tracksAdapter.getTrackByPosition(position)
                         searchHistory.add(item)
                         Toast.makeText(
@@ -220,6 +245,9 @@ class SearchActivity : AppCompatActivity() {
                 val historyAdapter = TrackListAdapter(searchHistory.get())
                 historyAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
                     override fun onItemClick(position: Int) {
+                        if (!clickDebounce()) {
+                            return
+                        }
                         val item = historyAdapter.getTrackByPosition(position)
                         searchHistory.add(item)
                         Toast.makeText(
@@ -248,6 +276,9 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_FIELD_DATA_TAG = "SEARCH_TEXT"
         const val SEARCH_FIELD_DEFAULT_VALUE = ""
+        const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+
         enum class ScreenStates {
             CONNECTION_ISSUES,
             EMPTY_RESULTS,
