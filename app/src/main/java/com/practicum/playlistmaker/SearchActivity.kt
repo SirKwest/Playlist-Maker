@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryTitle: TextView
     private lateinit var clearHistoryButton: Button
 
+    private lateinit var progressBar: ProgressBar
+
     private val apiClient: ItunesApiClient = ItunesApiClient()
     private lateinit var searchHistory: SearchHistory
 
@@ -61,6 +64,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton = findViewById(R.id.clear_history_button)
         searchHistoryTitle = findViewById(R.id.search_history_title)
+        progressBar = findViewById(R.id.progress_bar)
         searchHistory = SearchHistory((applicationContext as App).getSearchPreferences())
 
         val backButton = findViewById<Toolbar>(R.id.search_toolbar);
@@ -159,6 +163,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
+        if (searchField.text.isEmpty()) {
+            return
+        }
+        settingVisualElements(ScreenStates.REQUEST_IN_PROGRESS)
         val tracks = apiClient.getTrackList(searchField.text.toString())
         tracks.enqueue(object : Callback<ItunesResponse> {
             override fun onResponse(
@@ -205,7 +213,17 @@ class SearchActivity : AppCompatActivity() {
     private fun settingVisualElements(state: ScreenStates?) {
         val isDarkTheme = (applicationContext as App).isDarkTheme()
         when (state) {
+            ScreenStates.REQUEST_IN_PROGRESS -> {
+                progressBar.visibility = View.VISIBLE
+                recyclerMessage.visibility = View.GONE
+                refreshButton.visibility = View.GONE
+                recyclerImage.visibility = View.GONE
+                clearHistoryButton.visibility = View.GONE
+                searchHistoryTitle.visibility = View.GONE
+                recyclerView.adapter = TrackListAdapter(arrayListOf())
+            }
             ScreenStates.CONNECTION_ISSUES -> {
+                progressBar.visibility = View.GONE
                 recyclerMessage.visibility = View.VISIBLE
                 recyclerMessage.text = getString(R.string.connection_failed)
                 refreshButton.visibility = View.VISIBLE
@@ -219,9 +237,9 @@ class SearchActivity : AppCompatActivity() {
                 clearHistoryButton.visibility = View.GONE
                 searchHistoryTitle.visibility = View.GONE
                 recyclerView.adapter = TrackListAdapter(arrayListOf())
-
             }
             ScreenStates.EMPTY_RESULTS -> {
+                progressBar.visibility = View.GONE
                 recyclerMessage.visibility = View.VISIBLE
                 recyclerMessage.text = getString(R.string.empty_search)
                 refreshButton.visibility = View.GONE
@@ -237,6 +255,7 @@ class SearchActivity : AppCompatActivity() {
                 recyclerView.adapter = TrackListAdapter(arrayListOf())
             }
             ScreenStates.SHOW_HISTORY -> {
+                progressBar.visibility = View.GONE
                 recyclerImage.setImageResource(0)
                 recyclerMessage.text = null
                 refreshButton.visibility = View.GONE
@@ -264,6 +283,7 @@ class SearchActivity : AppCompatActivity() {
                 recyclerView.adapter = historyAdapter
             }
             else -> {
+                progressBar.visibility = View.GONE
                 recyclerImage.setImageResource(0)
                 recyclerMessage.text = null
                 refreshButton.visibility = View.GONE
@@ -283,6 +303,7 @@ class SearchActivity : AppCompatActivity() {
             CONNECTION_ISSUES,
             EMPTY_RESULTS,
             SHOW_HISTORY,
+            REQUEST_IN_PROGRESS,
             DEFAULT
         }
     }
