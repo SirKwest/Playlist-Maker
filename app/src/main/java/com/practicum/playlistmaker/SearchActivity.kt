@@ -190,11 +190,6 @@ class SearchActivity : AppCompatActivity() {
                         }
                         val item = tracksAdapter.getTrackByPosition(position)
                         searchHistory.add(item)
-                        Toast.makeText(
-                            this@SearchActivity,
-                            "Track: " + item.artistName + " - " + item.trackName,
-                            Toast.LENGTH_SHORT
-                        ).show()
                         val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
                         playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
                         this@SearchActivity.startActivity(playerActivityIntent)
