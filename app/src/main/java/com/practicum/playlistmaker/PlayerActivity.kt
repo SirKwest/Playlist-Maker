@@ -130,7 +130,11 @@ class PlayerActivity: AppCompatActivity() {
         mediaPlayer.setOnCompletionListener {
             threadHandler.removeCallbacks(timerRunnable)
             playButton.setImageResource(R.drawable.ic_play)
-            mediaPlayer.seekTo(0)
+            try {
+                mediaPlayer.seekTo(0)
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
+            }
             playbackTimer.text = dateFormat.format(mediaPlayer.currentPosition)
         }
     }
