@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,6 +20,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity: AppCompatActivity() {
+    private val TAG: String = "PlayerActivity"
+
     private var mediaPlayer = MediaPlayer()
     private lateinit var playbackTimer: TextView
     private lateinit var playButton: ImageView
@@ -31,7 +34,7 @@ class PlayerActivity: AppCompatActivity() {
             return
         }
         playbackTimer.text = dateFormat.format(mediaPlayer.currentPosition)
-        threadHandler.postDelayed(timerRunnable, 300)
+        threadHandler.postDelayed(timerRunnable, TIMER_UPDATE_DELAY)
     }
 
     private val timerRunnable = { timerProgress() }
@@ -106,7 +109,6 @@ class PlayerActivity: AppCompatActivity() {
         } else {
             trackCountry.text = trackInfo.country
         }
-
         mediaPlayer.setDataSource(trackInfo.previewUrl)
 
         mediaPlayer.prepareAsync()
@@ -123,7 +125,7 @@ class PlayerActivity: AppCompatActivity() {
                     mediaPlayer.start()
                 }
             } catch (e: IllegalStateException) {
-                e.printStackTrace()
+                Log.e(TAG, e.printStackTrace().toString())
             }
         }
 
@@ -133,7 +135,7 @@ class PlayerActivity: AppCompatActivity() {
             try {
                 mediaPlayer.seekTo(0)
             } catch (e: IllegalStateException) {
-                e.printStackTrace()
+                Log.e(TAG, e.printStackTrace().toString())
             }
             playbackTimer.text = dateFormat.format(mediaPlayer.currentPosition)
         }
@@ -145,7 +147,7 @@ class PlayerActivity: AppCompatActivity() {
             mediaPlayer.pause()
             playButton.setImageResource(R.drawable.ic_play)
         } catch (e: IllegalStateException) {
-            e.printStackTrace()
+            Log.e(TAG, e.printStackTrace().toString())
         }
 
     }
@@ -158,5 +160,6 @@ class PlayerActivity: AppCompatActivity() {
 
     companion object {
         const val SELECTED_TRACK = "selected_track"
+        const val TIMER_UPDATE_DELAY = 300L
     }
 }

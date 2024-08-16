@@ -129,6 +129,11 @@ class SearchActivity : AppCompatActivity() {
         refreshButton.setOnClickListener { search() }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(searchRunnable)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_FIELD_DATA_TAG, searchValue)
