@@ -27,6 +27,7 @@ import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.api.SearchHistoryInteractor
+import com.practicum.playlistmaker.domain.api.TracksConsumer
 import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.ui.PlayerActivity
@@ -173,7 +174,7 @@ class SearchActivity : AppCompatActivity() {
         settingVisualElements(ScreenStates.REQUEST_IN_PROGRESS)
         tracksInteractor.searchTracks(
             searchField.text.toString(),
-            object : TracksInteractor.TracksConsumer {
+            object : TracksConsumer {
                 override fun consume(foundedTracks: List<Track>) {
                     runOnUiThread {handleResponse(foundedTracks)}
                 }

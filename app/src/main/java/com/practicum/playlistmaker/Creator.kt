@@ -39,7 +39,4 @@ object Creator {
     private fun getHistoryRepository(): HistoryRepository {
         return HistoryRepositoryImpl(getSharedPreferences(HistoryRepository.PREFERENCES_NAME))
     }
-
-
-
 }
