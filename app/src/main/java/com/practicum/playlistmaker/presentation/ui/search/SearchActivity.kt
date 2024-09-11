@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.search
 
 import android.content.Context
 import android.content.Intent
@@ -23,12 +23,13 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import com.practicum.playlistmaker.api.ItunesApiClient
-import com.practicum.playlistmaker.api.ItunesResponse
-import com.practicum.playlistmaker.track.TrackListAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.practicum.playlistmaker.App
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.api.SearchHistoryInteractor
+import com.practicum.playlistmaker.domain.api.TracksInteractor
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.presentation.ui.PlayerActivity
 
 class SearchActivity : AppCompatActivity() {
     private var searchValue = ""
@@ -49,8 +50,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var progressBar: ProgressBar
 
-    private val apiClient: ItunesApiClient = ItunesApiClient()
-    private lateinit var searchHistory: SearchHistory
+    private val tracksInteractor: TracksInteractor = Creator.provideTracksInteractor()
+    private val historyInteractor: SearchHistoryInteractor = Creator.provideSearchHistoryInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,14 +66,13 @@ class SearchActivity : AppCompatActivity() {
         clearHistoryButton = findViewById(R.id.clear_history_button)
         searchHistoryTitle = findViewById(R.id.search_history_title)
         progressBar = findViewById(R.id.progress_bar)
-        searchHistory = SearchHistory((applicationContext as App).getSearchPreferences())
 
         val backButton = findViewById<Toolbar>(R.id.search_toolbar);
         backButton.setOnClickListener { super.finish() }
 
         searchField = findViewById(R.id.search_field)
         searchField.setOnFocusChangeListener { _, isFocused ->
-            if (isFocused && searchField.text.isEmpty() && searchHistory.get().isNotEmpty()) {
+            if (isFocused && searchField.text.isEmpty() && historyInteractor.get().isNotEmpty()) {
                 settingVisualElements(ScreenStates.SHOW_HISTORY)
             } else {
                 settingVisualElements(ScreenStates.DEFAULT)
@@ -115,18 +115,18 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistory.clear()
+            historyInteractor.clear()
             settingVisualElements(ScreenStates.DEFAULT)
         }
 
         searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search()
+                searchDebounce()
             }
             false
         }
 
-        refreshButton.setOnClickListener { search() }
+        refreshButton.setOnClickListener { searchDebounce() }
     }
 
     override fun onDestroy() {
@@ -141,8 +141,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchValue =
-            savedInstanceState.getString(SEARCH_FIELD_DATA_TAG, SEARCH_FIELD_DEFAULT_VALUE)
+        searchValue = savedInstanceState.getString(SEARCH_FIELD_DATA_TAG, SEARCH_FIELD_DEFAULT_VALUE)
         if (searchValue.isEmpty())
             return
 
@@ -172,42 +171,38 @@ class SearchActivity : AppCompatActivity() {
             return
         }
         settingVisualElements(ScreenStates.REQUEST_IN_PROGRESS)
-        val tracks = apiClient.getTrackList(searchField.text.toString())
-        tracks.enqueue(object : Callback<ItunesResponse> {
-            override fun onResponse(
-                call: Call<ItunesResponse>,
-                response: Response<ItunesResponse>
-            ) {
-                if (!response.isSuccessful) {
-                    settingVisualElements(ScreenStates.CONNECTION_ISSUES)
+        tracksInteractor.searchTracks(
+            searchField.text.toString(),
+            object : TracksInteractor.TracksConsumer {
+                override fun consume(foundedTracks: List<Track>) {
+                    runOnUiThread {handleResponse(foundedTracks)}
+                }
+
+                override fun handleError(error: Exception) {
+                    runOnUiThread { settingVisualElements(ScreenStates.CONNECTION_ISSUES) }
+                }
+            })
+    }
+    private fun handleResponse(tracks: List<Track>) {
+        if (tracks.isEmpty()) {
+            settingVisualElements(ScreenStates.EMPTY_RESULTS)
+            return
+        }
+        val tracksAdapter = TrackListAdapter(tracks)
+        recyclerView.adapter = tracksAdapter
+        tracksAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                if (!clickDebounce()) {
                     return
                 }
-                if (response.body() == null || response.body()!!.results.isNullOrEmpty() == true) {
-                    settingVisualElements(ScreenStates.EMPTY_RESULTS)
-                    return
-                }
-                val tracksAdapter = TrackListAdapter(response.body()!!.results)
-                recyclerView.adapter = tracksAdapter
-                tracksAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
-                    override fun onItemClick(position: Int) {
-                        if (!clickDebounce()) {
-                            return
-                        }
-                        val item = tracksAdapter.getTrackByPosition(position)
-                        searchHistory.add(item)
-                        val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
-                        playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
-                        this@SearchActivity.startActivity(playerActivityIntent)
-                    }
-                })
-                settingVisualElements(ScreenStates.DEFAULT)
+                val item = tracksAdapter.getTrackByPosition(position)
+                historyInteractor.add(item)
+                val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
+                this@SearchActivity.startActivity(playerActivityIntent)
             }
-
-            override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
-                settingVisualElements(ScreenStates.CONNECTION_ISSUES)
-            }
-
         })
+        settingVisualElements(ScreenStates.DEFAULT)
     }
 
     private fun settingVisualElements(state: ScreenStates?) {
@@ -217,7 +212,7 @@ class SearchActivity : AppCompatActivity() {
                 progressBar.visibility = View.VISIBLE
                 recyclerMessage.visibility = View.GONE
                 refreshButton.visibility = View.GONE
-                recyclerImage.visibility = View.GONE
+                recyclerImage.setImageResource(0)
                 clearHistoryButton.visibility = View.GONE
                 searchHistoryTitle.visibility = View.GONE
                 recyclerView.adapter = TrackListAdapter(arrayListOf())
@@ -261,14 +256,14 @@ class SearchActivity : AppCompatActivity() {
                 refreshButton.visibility = View.GONE
                 clearHistoryButton.visibility = View.VISIBLE
                 searchHistoryTitle.visibility = View.VISIBLE
-                val historyAdapter = TrackListAdapter(searchHistory.get())
+                val historyAdapter = TrackListAdapter(historyInteractor.get())
                 historyAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
                     override fun onItemClick(position: Int) {
                         if (!clickDebounce()) {
                             return
                         }
                         val item = historyAdapter.getTrackByPosition(position)
-                        searchHistory.add(item)
+                        historyInteractor.add(item)
                         Toast.makeText(
                             this@SearchActivity,
                             "Track: " + item.artistName + " - " + item.trackName,

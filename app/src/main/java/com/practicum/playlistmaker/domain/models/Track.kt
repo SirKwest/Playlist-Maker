@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.track
+package com.practicum.playlistmaker.domain.models
 
 data class Track(
     val trackId: Int,

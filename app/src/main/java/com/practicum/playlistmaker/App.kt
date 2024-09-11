@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker
 
 import android.app.Application
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
@@ -12,13 +11,10 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        themePreferences = getSharedPreferences(THEME_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        searchPreferences = getSharedPreferences(SearchHistory.PREFERENCES_NAME, Context.MODE_PRIVATE)
+        Creator.init(this)
+        themePreferences = Creator.getSharedPreferences(THEME_PREFERENCES_NAME)
+        searchPreferences = Creator.getSharedPreferences(HISTORY_PREFERENCES_NAME)
         switchTheme(isDarkTheme())
-    }
-
-    fun getSearchPreferences(): SharedPreferences {
-        return searchPreferences
     }
 
     fun isDarkTheme(): Boolean {
@@ -38,6 +34,7 @@ class App : Application() {
 
     companion object {
         const val THEME_PREFERENCES_NAME = "theme_preferences"
+        const val HISTORY_PREFERENCES_NAME = "search_history"
         const val THEME_KEY = "dark_theme"
     }
 }
