@@ -3,6 +3,8 @@ package com.practicum.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -12,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +33,11 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
     private var searchValue = ""
 
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val searchRunnable = Runnable { search() }
+
     private lateinit var searchField: EditText
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerImage: ImageView
@@ -38,6 +46,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchHistoryTitle: TextView
     private lateinit var clearHistoryButton: Button
+
+    private lateinit var progressBar: ProgressBar
 
     private val apiClient: ItunesApiClient = ItunesApiClient()
     private lateinit var searchHistory: SearchHistory
@@ -54,6 +64,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton = findViewById(R.id.clear_history_button)
         searchHistoryTitle = findViewById(R.id.search_history_title)
+        progressBar = findViewById(R.id.progress_bar)
         searchHistory = SearchHistory((applicationContext as App).getSearchPreferences())
 
         val backButton = findViewById<Toolbar>(R.id.search_toolbar);
@@ -79,6 +90,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 clearButton.isVisible = !p0.isNullOrEmpty();
                 searchValue = p0.toString();
+                searchDebounce()
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -117,6 +129,11 @@ class SearchActivity : AppCompatActivity() {
         refreshButton.setOnClickListener { search() }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(searchRunnable)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_FIELD_DATA_TAG, searchValue)
@@ -136,7 +153,25 @@ class SearchActivity : AppCompatActivity() {
         /* End */
     }
 
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     private fun search() {
+        if (searchField.text.isEmpty()) {
+            return
+        }
+        settingVisualElements(ScreenStates.REQUEST_IN_PROGRESS)
         val tracks = apiClient.getTrackList(searchField.text.toString())
         tracks.enqueue(object : Callback<ItunesResponse> {
             override fun onResponse(
@@ -155,13 +190,11 @@ class SearchActivity : AppCompatActivity() {
                 recyclerView.adapter = tracksAdapter
                 tracksAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
                     override fun onItemClick(position: Int) {
+                        if (!clickDebounce()) {
+                            return
+                        }
                         val item = tracksAdapter.getTrackByPosition(position)
                         searchHistory.add(item)
-                        Toast.makeText(
-                            this@SearchActivity,
-                            "Track: " + item.artistName + " - " + item.trackName,
-                            Toast.LENGTH_SHORT
-                        ).show()
                         val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
                         playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
                         this@SearchActivity.startActivity(playerActivityIntent)
@@ -180,7 +213,17 @@ class SearchActivity : AppCompatActivity() {
     private fun settingVisualElements(state: ScreenStates?) {
         val isDarkTheme = (applicationContext as App).isDarkTheme()
         when (state) {
+            ScreenStates.REQUEST_IN_PROGRESS -> {
+                progressBar.visibility = View.VISIBLE
+                recyclerMessage.visibility = View.GONE
+                refreshButton.visibility = View.GONE
+                recyclerImage.visibility = View.GONE
+                clearHistoryButton.visibility = View.GONE
+                searchHistoryTitle.visibility = View.GONE
+                recyclerView.adapter = TrackListAdapter(arrayListOf())
+            }
             ScreenStates.CONNECTION_ISSUES -> {
+                progressBar.visibility = View.GONE
                 recyclerMessage.visibility = View.VISIBLE
                 recyclerMessage.text = getString(R.string.connection_failed)
                 refreshButton.visibility = View.VISIBLE
@@ -194,9 +237,9 @@ class SearchActivity : AppCompatActivity() {
                 clearHistoryButton.visibility = View.GONE
                 searchHistoryTitle.visibility = View.GONE
                 recyclerView.adapter = TrackListAdapter(arrayListOf())
-
             }
             ScreenStates.EMPTY_RESULTS -> {
+                progressBar.visibility = View.GONE
                 recyclerMessage.visibility = View.VISIBLE
                 recyclerMessage.text = getString(R.string.empty_search)
                 refreshButton.visibility = View.GONE
@@ -212,6 +255,7 @@ class SearchActivity : AppCompatActivity() {
                 recyclerView.adapter = TrackListAdapter(arrayListOf())
             }
             ScreenStates.SHOW_HISTORY -> {
+                progressBar.visibility = View.GONE
                 recyclerImage.setImageResource(0)
                 recyclerMessage.text = null
                 refreshButton.visibility = View.GONE
@@ -220,6 +264,9 @@ class SearchActivity : AppCompatActivity() {
                 val historyAdapter = TrackListAdapter(searchHistory.get())
                 historyAdapter.setOnItemClickListener(object : TrackListAdapter.OnItemClickListener {
                     override fun onItemClick(position: Int) {
+                        if (!clickDebounce()) {
+                            return
+                        }
                         val item = historyAdapter.getTrackByPosition(position)
                         searchHistory.add(item)
                         Toast.makeText(
@@ -236,6 +283,7 @@ class SearchActivity : AppCompatActivity() {
                 recyclerView.adapter = historyAdapter
             }
             else -> {
+                progressBar.visibility = View.GONE
                 recyclerImage.setImageResource(0)
                 recyclerMessage.text = null
                 refreshButton.visibility = View.GONE
@@ -248,10 +296,14 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_FIELD_DATA_TAG = "SEARCH_TEXT"
         const val SEARCH_FIELD_DEFAULT_VALUE = ""
+        const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+
         enum class ScreenStates {
             CONNECTION_ISSUES,
             EMPTY_RESULTS,
             SHOW_HISTORY,
+            REQUEST_IN_PROGRESS,
             DEFAULT
         }
     }

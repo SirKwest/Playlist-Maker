@@ -1,6 +1,10 @@
 package com.practicum.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,15 +15,37 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.practicum.playlistmaker.track.Track
+import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity: AppCompatActivity() {
+    private val TAG: String = "PlayerActivity"
+
+    private var mediaPlayer = MediaPlayer()
+    private lateinit var playbackTimer: TextView
+    private lateinit var playButton: ImageView
+
+    private lateinit var threadHandler: Handler
+
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+    private fun timerProgress() {
+        if (!mediaPlayer.isPlaying) {
+            return
+        }
+        playbackTimer.text = dateFormat.format(mediaPlayer.currentPosition)
+        threadHandler.postDelayed(timerRunnable, TIMER_UPDATE_DELAY)
+    }
+
+    private val timerRunnable = { timerProgress() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         val trackJsonExtra = intent.getStringExtra(SELECTED_TRACK)
         val trackInfo = Gson().fromJson(trackJsonExtra, Track::class.java)
+
+        playbackTimer = findViewById(R.id.playback_timer)
 
         val albumImage: ImageView = findViewById(R.id.big_album_cover)
         val trackName: TextView = findViewById(R.id.track_name)
@@ -36,8 +62,12 @@ class PlayerActivity: AppCompatActivity() {
         val genreGroup: Group = findViewById(R.id.genre_description)
         val countryGroup: Group = findViewById(R.id.country_description)
 
-        val backButton = findViewById<Toolbar>(R.id.player_toolbar);
+        val backButton = findViewById<Toolbar>(R.id.player_toolbar)
         backButton.setOnClickListener { super.finish() }
+
+        playButton = findViewById(R.id.play_button)
+
+        threadHandler = Handler(Looper.getMainLooper())
 
         Glide.with(this)
             .load(trackInfo.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
@@ -79,10 +109,57 @@ class PlayerActivity: AppCompatActivity() {
         } else {
             trackCountry.text = trackInfo.country
         }
+        mediaPlayer.setDataSource(trackInfo.previewUrl)
 
+        mediaPlayer.prepareAsync()
+
+        playButton.setOnClickListener {
+            playButton.setImageResource(R.drawable.ic_play)
+            threadHandler.post(timerRunnable)
+            try {
+                if (mediaPlayer.isPlaying) {
+                    playButton.setImageResource(R.drawable.ic_play)
+                    mediaPlayer.pause()
+                } else {
+                    playButton.setImageResource(R.drawable.ic_pause)
+                    mediaPlayer.start()
+                }
+            } catch (e: IllegalStateException) {
+                Log.e(TAG, e.printStackTrace().toString())
+            }
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            threadHandler.removeCallbacks(timerRunnable)
+            playButton.setImageResource(R.drawable.ic_play)
+            try {
+                mediaPlayer.seekTo(0)
+            } catch (e: IllegalStateException) {
+                Log.e(TAG, e.printStackTrace().toString())
+            }
+            playbackTimer.text = dateFormat.format(mediaPlayer.currentPosition)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        try {
+            mediaPlayer.pause()
+            playButton.setImageResource(R.drawable.ic_play)
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, e.printStackTrace().toString())
+        }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        threadHandler.removeCallbacks(timerRunnable)
     }
 
     companion object {
         const val SELECTED_TRACK = "selected_track"
+        const val TIMER_UPDATE_DELAY = 300L
     }
 }
