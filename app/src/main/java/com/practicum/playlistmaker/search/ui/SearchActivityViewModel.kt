@@ -36,18 +36,12 @@ class SearchActivityViewModel(private val historyInteractor: SearchHistoryIntera
 
     fun searchDebounce(searchQuery: String) {
         val searchRunnable = Runnable { search(searchQuery) }
-        handler.removeCallbacksAndMessages(searchRunnable)
+        handler.removeCallbacksAndMessages(REQUEST_TOKEN)
         val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            REQUEST_TOKEN,
-            postTime,
-        )
-        //handler.postDelayed(searchRunnable, SearchActivity.SEARCH_DEBOUNCE_DELAY)
+        handler.postAtTime(searchRunnable, REQUEST_TOKEN, postTime)
     }
 
     private fun search(searchQuery: String) {
-        Log.i("VIEWMODEL", "Search of " + searchQuery + " started")
         if (searchQuery.isEmpty()) {
             return
         }
