@@ -15,6 +15,8 @@ import com.practicum.playlistmaker.domain.models.HistoryRepository
 import com.practicum.playlistmaker.domain.models.TracksRepository
 import com.practicum.playlistmaker.player.data.PlayerImpl
 import com.practicum.playlistmaker.player.domain.PlayerInteractor
+import com.practicum.playlistmaker.settings.data.ThemeInteractorImpl
+import com.practicum.playlistmaker.settings.domain.ThemeInteractor
 import com.practicum.playlistmaker.sharing.data.SharingImpl
 import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 
@@ -39,6 +41,10 @@ object Creator {
 
     fun provideShareInteractor(): SharingInteractor {
         return SharingImpl(application.baseContext)
+    }
+
+    fun provideThemeInteractor(): ThemeInteractor {
+        return ThemeInteractorImpl(getSharedPreferences(ThemeInteractor.THEME_PREFERENCES_NAME))
     }
 
     fun getSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE): SharedPreferences {
