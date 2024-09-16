@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.creator.Creator
-import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.PlayerInteractor
 
 class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel() {
     private var currentState: MutableLiveData<PlayerInteractor.Companion.PlayerState> =
-        MutableLiveData(com.practicum.playlistmaker.player.domain.api.PlayerInteractor.Companion.PlayerState.PREPARED)
+        MutableLiveData(PlayerInteractor.Companion.PlayerState.PREPARED)
     private var positionState: MutableLiveData<Int> = MutableLiveData(0)
 
     init {

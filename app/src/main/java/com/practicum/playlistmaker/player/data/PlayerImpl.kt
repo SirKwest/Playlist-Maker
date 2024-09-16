@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.player.data
 
 import android.media.MediaPlayer
 import android.util.Log
-import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.PlayerInteractor
 import java.io.IOException
 
 class PlayerImpl(private var mediaPlayer: MediaPlayer, private var url: String): PlayerInteractor {

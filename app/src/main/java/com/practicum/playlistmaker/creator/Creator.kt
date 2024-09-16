@@ -14,7 +14,9 @@ import com.practicum.playlistmaker.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.domain.models.HistoryRepository
 import com.practicum.playlistmaker.domain.models.TracksRepository
 import com.practicum.playlistmaker.player.data.PlayerImpl
-import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.PlayerInteractor
+import com.practicum.playlistmaker.sharing.data.SharingImpl
+import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 
 object Creator {
     private lateinit var application: Application
@@ -33,6 +35,10 @@ object Creator {
 
     fun providePlayerInteractor(url: String): PlayerInteractor {
         return PlayerImpl(MediaPlayer(), url)
+    }
+
+    fun provideShareInteractor(): SharingInteractor {
+        return SharingImpl(application.baseContext)
     }
 
     fun getSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE): SharedPreferences {
