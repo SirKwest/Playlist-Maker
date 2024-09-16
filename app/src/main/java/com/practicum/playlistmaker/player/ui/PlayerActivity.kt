@@ -9,7 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
-import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.domain.PlayerInteractor
 import java.text.SimpleDateFormat
 import java.util.Locale

@@ -1,8 +1,8 @@
-package com.practicum.playlistmaker.domain.impl
+package com.practicum.playlistmaker.search.domain.impl
 
-import com.practicum.playlistmaker.domain.api.TracksConsumer
-import com.practicum.playlistmaker.domain.api.TracksInteractor
-import com.practicum.playlistmaker.domain.models.TracksRepository
+import com.practicum.playlistmaker.search.domain.api.TracksConsumer
+import com.practicum.playlistmaker.search.domain.api.TracksInteractor
+import com.practicum.playlistmaker.search.domain.models.TracksRepository
 import java.util.concurrent.Executors
 
 class TracksInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
