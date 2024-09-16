@@ -1,8 +1,9 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.creator
 
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import com.practicum.playlistmaker.data.repository.HistoryRepositoryImpl
 import com.practicum.playlistmaker.data.repository.TracksRepositoryImpl
 import com.practicum.playlistmaker.data.network.ItunesApiClient
@@ -12,12 +13,14 @@ import com.practicum.playlistmaker.domain.impl.SearchHistoryInteractorImpl
 import com.practicum.playlistmaker.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.domain.models.HistoryRepository
 import com.practicum.playlistmaker.domain.models.TracksRepository
+import com.practicum.playlistmaker.player.data.PlayerImpl
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 
 object Creator {
     private lateinit var application: Application
 
     fun init(app: Application) {
-        this.application = app
+        application = app
     }
 
     fun provideTracksInteractor(): TracksInteractor {
@@ -26,6 +29,10 @@ object Creator {
 
     fun provideSearchHistoryInteractor(): SearchHistoryInteractor {
         return SearchHistoryInteractorImpl(getHistoryRepository())
+    }
+
+    fun providePlayerInteractor(url: String): PlayerInteractor {
+        return PlayerImpl(MediaPlayer(), url)
     }
 
     fun getSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE): SharedPreferences {

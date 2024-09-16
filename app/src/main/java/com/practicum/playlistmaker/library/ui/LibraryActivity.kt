@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.ui
+package com.practicum.playlistmaker.library.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

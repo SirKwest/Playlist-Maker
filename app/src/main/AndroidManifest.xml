@@ -18,16 +18,16 @@
             android:name=".presentation.ui.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.ui.PlayerActivity"
+            android:name=".player.ui.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.ui.LibraryActivity"
+            android:name=".library.ui.LibraryActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.ui.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.ui.MainActivity"
+            android:name=".main.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

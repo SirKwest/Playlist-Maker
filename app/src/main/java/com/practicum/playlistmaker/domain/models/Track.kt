@@ -1,5 +1,8 @@
 package com.practicum.playlistmaker.domain.models
 
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 data class Track(
     val trackId: Int,
     val trackName: String,
@@ -11,4 +14,8 @@ data class Track(
     val primaryGenreName: String?,
     val country: String?,
     val previewUrl: String?,
-)
+) {
+    fun getBigCover() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+    fun getReleaseYear() = releaseDate?.substring(0..3)
+    fun getTrackTimeFormatted(format: String) = SimpleDateFormat(format, Locale.getDefault()).format(trackTimeMillis?.toLong())
+}

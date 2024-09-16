@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import com.practicum.playlistmaker.creator.Creator
 
 class App : Application() {
     private lateinit var themePreferences: SharedPreferences
