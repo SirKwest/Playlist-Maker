@@ -70,6 +70,11 @@ class SearchActivityViewModel(private val historyInteractor: SearchHistoryIntera
         searchScreenState.postValue(state)
     }
 
+    fun isDarkThemeEnabled(): Boolean {
+        val settingsInteractor = Creator.provideThemeInteractor()
+        return settingsInteractor.isDarkTheme()
+    }
+
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(REQUEST_TOKEN)

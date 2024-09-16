@@ -131,7 +131,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun settingVisualElements(state: ScreenStates?) {
-        val isDarkTheme = (applicationContext as App).isDarkTheme()
+        val isDarkTheme = viewModel.isDarkThemeEnabled()
         binding.progressBar.isVisible = state is ScreenStates.RequestInProgress
         when (state) {
             ScreenStates.RequestInProgress -> {
