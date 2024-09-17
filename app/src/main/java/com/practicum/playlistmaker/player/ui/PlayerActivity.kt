@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity: AppCompatActivity() {
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel: PlayerViewModel by viewModel()
 
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val binding: ActivityPlayerBinding by lazy { ActivityPlayerBinding.inflate(layoutInflater) }
@@ -26,7 +27,6 @@ class PlayerActivity: AppCompatActivity() {
         val trackJsonExtra = intent.getStringExtra(SELECTED_TRACK)
         val trackInfo = Gson().fromJson(trackJsonExtra, Track::class.java)
 
-        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(trackInfo.previewUrl!!))[PlayerViewModel::class.java]
         viewModel.observePlayingState().observe(this) { state ->
             viewModel.postActualState()
             when (state) {
