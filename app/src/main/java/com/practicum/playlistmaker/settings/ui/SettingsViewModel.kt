@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.settings.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,10 +29,10 @@ class SettingsViewModel(private val sharingInteractor: SharingInteractor, privat
     fun observeShare(): LiveData<ShareData> = share
     fun observeMail(): LiveData<MailData> = mail
     fun observeTerms(): LiveData<TermsData> = terms
-    fun observeThemeState(): LiveData<Boolean> = MutableLiveData(themeInteractor.isDarkTheme())
+    fun observeThemeState(): LiveData<Boolean> = MutableLiveData(themeInteractor.isDarkThemeSelected())
 
-    fun switchTheme(isDarkTheme: Boolean) {
-        themeInteractor.switchTheme(isDarkTheme)
+    fun updateTheme(isDarkTheme: Boolean) {
+        themeInteractor.saveTheme(isDarkTheme)
     }
 
 

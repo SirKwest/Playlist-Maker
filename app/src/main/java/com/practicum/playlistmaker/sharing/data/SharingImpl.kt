@@ -8,6 +8,7 @@ import com.practicum.playlistmaker.sharing.domain.model.ShareData
 import com.practicum.playlistmaker.sharing.domain.model.TermsData
 
 class SharingImpl(private val context: Context) : SharingInteractor {
+
     override fun getShareData(): ShareData {
         return ShareData(context.getString(R.string.practicum_url))
     }

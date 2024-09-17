@@ -77,10 +77,7 @@ class SearchActivity : AppCompatActivity() {
 
         binding.cancelButton.setOnClickListener {
             binding.searchField.setText("")
-            binding.searchRecyclerView.adapter = TrackListAdapter(emptyList())
-            binding.emptySearchImage.setImageResource(0)
-            binding.emptySearchText.text = null
-            binding.refreshButton.isVisible = false
+            settingVisualElements(ScreenStates.ShowList(emptyList(), false))
             /* Hide keyboard after clearing input */
             val view = this.currentFocus
             val inputMethodManager =
@@ -147,8 +144,6 @@ class SearchActivity : AppCompatActivity() {
                 binding.emptySearchText.isVisible = true
                 binding.emptySearchText.text = getString(R.string.connection_failed)
 
-
-
                 val typedValue = TypedValue()
                 theme.resolveAttribute(R.attr.connectionFailedDrawable, typedValue, true)
                 binding.emptySearchImage.setImageResource(typedValue.resourceId)
@@ -174,7 +169,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.emptySearchImage.setImageResource(0)
                 binding.emptySearchText.text = null
                 binding.refreshButton.isVisible = false
-                binding.clearHistoryButton.isVisible = true
+                binding.clearHistoryButton.isVisible = state.isHistory && state.tracks.isNotEmpty()
                 binding.searchHistoryTitle.isVisible = state.isHistory
                 val historyAdapter = TrackListAdapter(state.tracks)
                 historyAdapter.setOnItemClickListener(object :

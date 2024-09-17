@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.settings.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
@@ -15,7 +16,10 @@ class SettingsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java]
 
         binding.themeSwitcher.setChecked(viewModel.observeThemeState().value!!)
-        binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked -> viewModel.switchTheme(isChecked) }
+        binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
+            viewModel.updateTheme(isChecked)
+        }
 
         binding.shareButton.setOnClickListener {
             viewModel.observeShare().observe(this) {

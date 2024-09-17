@@ -35,6 +35,9 @@ class SearchActivityViewModel(
     }
 
     fun searchDebounce(searchQuery: String) {
+        if (searchQuery.isEmpty()) {
+            updateScreenState(ScreenStates.ShowList(getHistory(), true))
+        }
         val searchRunnable = Runnable { search(searchQuery) }
         handler.removeCallbacksAndMessages(REQUEST_TOKEN)
         val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
