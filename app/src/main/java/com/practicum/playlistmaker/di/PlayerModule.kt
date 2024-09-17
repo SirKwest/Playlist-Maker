@@ -9,11 +9,14 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val playerModule = module {
-    factory { MediaPlayer() }
-    single<PlayerInteractor> { (url: String) ->
-        PlayerInteractorImpl(get(), url)
+
+    single { MediaPlayer() }
+
+    factory<PlayerInteractor> {
+        PlayerInteractorImpl(get(), get())
     }
-    viewModel {
-        PlayerViewModel(get())
+
+    viewModel { (url: String) ->
+        PlayerViewModel(get(parameters = { parametersOf(url) }))
     }
 }

@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.practicum.playlistmaker.settings.data.ThemeInteractorImpl
 import com.practicum.playlistmaker.settings.domain.ThemeInteractor
 import com.practicum.playlistmaker.settings.ui.SettingsViewModel
@@ -13,7 +12,7 @@ import org.koin.dsl.module
 
 val settingsModule = module {
 
-    single<SharedPreferences> {
+    single {
         androidContext().getSharedPreferences(ThemeInteractor.THEME_PREFERENCES_NAME, Context.MODE_PRIVATE)
     }
 

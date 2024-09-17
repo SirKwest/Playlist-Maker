@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import com.practicum.playlistmaker.di.playerModule
+import com.practicum.playlistmaker.di.searchModule
 import com.practicum.playlistmaker.di.settingsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -17,7 +18,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(settingsModule, playerModule)
+            modules(settingsModule, playerModule, searchModule)
         }
 
         themePreferences = baseContext.getSharedPreferences(THEME_PREFERENCES_NAME, Context.MODE_PRIVATE)
