@@ -7,12 +7,14 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -131,7 +133,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun settingVisualElements(state: ScreenStates?) {
-        val isDarkTheme = viewModel.isDarkThemeEnabled()
         binding.progressBar.isVisible = state is ScreenStates.RequestInProgress
         when (state) {
             ScreenStates.RequestInProgress -> {
@@ -145,29 +146,27 @@ class SearchActivity : AppCompatActivity() {
             ScreenStates.ConnectionIssues -> {
                 binding.emptySearchText.isVisible = true
                 binding.emptySearchText.text = getString(R.string.connection_failed)
-                binding.refreshButton.visibility = View.VISIBLE
-                binding.emptySearchImage.setImageResource(
-                    if (isDarkTheme) {
-                        R.drawable.connection_failed_dark
-                    } else {
-                        R.drawable.connection_failed_light
-                    }
-                )
-                binding.clearHistoryButton.isVisible = false
 
+
+
+                val typedValue = TypedValue()
+                theme.resolveAttribute(R.attr.connectionFailedDrawable, typedValue, true)
+                binding.emptySearchImage.setImageResource(typedValue.resourceId)
+
+                binding.clearHistoryButton.isVisible = false
+                binding.refreshButton.isVisible = true
                 binding.searchRecyclerView.adapter = TrackListAdapter(arrayListOf())
             }
             ScreenStates.EmptyResults -> {
                 binding.emptySearchText.isVisible = true
                 binding.emptySearchText.text = getString(R.string.empty_search)
                 binding.refreshButton.isVisible = false
-                binding.emptySearchImage.setImageResource(
-                    if (isDarkTheme) {
-                        R.drawable.empty_search_dark
-                    } else {
-                        R.drawable.empty_search_light
-                    }
-                )
+                binding.emptySearchImage.isVisible = true
+
+                val typedValue = TypedValue()
+                theme.resolveAttribute(R.attr.emptySearchDrawable, typedValue, true)
+                binding.emptySearchImage.setImageResource(typedValue.resourceId)
+
                 binding.clearHistoryButton.isVisible = false
                 binding.searchRecyclerView.adapter = TrackListAdapter(arrayListOf())
             }
@@ -186,11 +185,6 @@ class SearchActivity : AppCompatActivity() {
                         }
                         val item = historyAdapter.getTrackByPosition(position)
                         viewModel.addToHistory(item)
-                        Toast.makeText(
-                            this@SearchActivity,
-                            "Track: " + item.artistName + " - " + item.trackName,
-                            Toast.LENGTH_SHORT
-                        ).show()
                         historyAdapter.notifyDataSetChanged()
                         val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
                         playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))

@@ -1,6 +1,7 @@
-package com.practicum.playlistmaker.player.domain
+package com.practicum.playlistmaker.player.domain.api
 
 interface PlayerInteractor {
+
     fun getState(): PlayerState
     fun getCurrentPosition(): Int
     fun prepare()

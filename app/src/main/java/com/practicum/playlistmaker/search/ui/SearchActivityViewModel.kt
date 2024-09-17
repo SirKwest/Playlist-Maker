@@ -3,8 +3,6 @@ package com.practicum.playlistmaker.search.ui
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,11 +15,13 @@ import com.practicum.playlistmaker.search.domain.api.TracksConsumer
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 
-class SearchActivityViewModel(private val historyInteractor: SearchHistoryInteractor, private val tracksInteractor: TracksInteractor) : ViewModel() {
+class SearchActivityViewModel(
+    private val historyInteractor: SearchHistoryInteractor, private val tracksInteractor: TracksInteractor) : ViewModel() {
+
     private val searchScreenState = MutableLiveData<ScreenStates>()
+    private val handler = Handler(Looper.getMainLooper())
     fun observeScreenState(): LiveData<ScreenStates> = searchScreenState
 
-    private val handler = Handler(Looper.getMainLooper())
     fun clearHistory() {
         historyInteractor.clear()
     }
@@ -39,6 +39,11 @@ class SearchActivityViewModel(private val historyInteractor: SearchHistoryIntera
         handler.removeCallbacksAndMessages(REQUEST_TOKEN)
         val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
         handler.postAtTime(searchRunnable, REQUEST_TOKEN, postTime)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        handler.removeCallbacksAndMessages(REQUEST_TOKEN)
     }
 
     private fun search(searchQuery: String) {
@@ -70,21 +75,15 @@ class SearchActivityViewModel(private val historyInteractor: SearchHistoryIntera
         searchScreenState.postValue(state)
     }
 
-    fun isDarkThemeEnabled(): Boolean {
-        val settingsInteractor = Creator.provideThemeInteractor()
-        return settingsInteractor.isDarkTheme()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(REQUEST_TOKEN)
-    }
     companion object {
-        const val SEARCH_DEBOUNCE_DELAY = 3000L
-        val REQUEST_TOKEN = Any()
+        private const val SEARCH_DEBOUNCE_DELAY = 3000L
+        private val REQUEST_TOKEN = Any()
         fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                SearchActivityViewModel(Creator.provideSearchHistoryInteractor(), Creator.provideTracksInteractor())
+                SearchActivityViewModel(
+                    Creator.provideSearchHistoryInteractor(),
+                    Creator.provideTracksInteractor(),
+                )
             }
         }
     }

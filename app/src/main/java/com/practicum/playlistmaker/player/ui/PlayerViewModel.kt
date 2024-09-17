@@ -9,20 +9,38 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.creator.Creator
-import com.practicum.playlistmaker.player.domain.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 
 class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel() {
     private var currentState: MutableLiveData<PlayerInteractor.Companion.PlayerState> =
         MutableLiveData(PlayerInteractor.Companion.PlayerState.PREPARED)
     private var positionState: MutableLiveData<Int> = MutableLiveData(0)
+    private var threadHandler: Handler = Handler(Looper.getMainLooper())
 
     init {
         preparing()
     }
     fun observePlayingState(): LiveData<PlayerInteractor.Companion.PlayerState> = currentState
     fun observePositionState(): LiveData<Int> = positionState
+    fun changeState() {
+        when (currentState.value) {
+            PlayerInteractor.Companion.PlayerState.STARTED -> pausing()
+            else -> starting()
+        }
+    }
 
-    private var threadHandler: Handler = Handler(Looper.getMainLooper())
+    fun postActualState() {
+        currentState.postValue(playerInteractor.getState())
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopTimer()
+        playerInteractor.release()
+        currentState.postValue(playerInteractor.getState())
+    }
+
+
     private fun timerProgress() {
         if (currentState.value !== PlayerInteractor.Companion.PlayerState.STARTED) {
             return
@@ -57,26 +75,8 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel
         startTimer()
     }
 
-    fun changeState() {
-        when (currentState.value) {
-            PlayerInteractor.Companion.PlayerState.STARTED -> pausing()
-            else -> starting()
-        }
-    }
-
-    fun postActualState() {
-        currentState.postValue(playerInteractor.getState())
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        stopTimer()
-        playerInteractor.release()
-        currentState.postValue(playerInteractor.getState())
-    }
-
     companion object {
-        const val TIMER_UPDATE_DELAY = 300L
+        private const val TIMER_UPDATE_DELAY = 300L
         fun getViewModelFactory(trackUrl: String) : ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {

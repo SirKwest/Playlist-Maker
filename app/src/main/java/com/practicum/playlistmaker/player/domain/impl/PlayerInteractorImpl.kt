@@ -1,14 +1,15 @@
-package com.practicum.playlistmaker.player.data
+package com.practicum.playlistmaker.player.domain.impl
 
 import android.media.MediaPlayer
 import android.util.Log
-import com.practicum.playlistmaker.player.domain.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import java.io.IOException
 
-class PlayerImpl(private var mediaPlayer: MediaPlayer, private var url: String): PlayerInteractor {
-    private val TAG = "Player_Implementation"
+class PlayerInteractorImpl(private var mediaPlayer: MediaPlayer, private var url: String):
+    PlayerInteractor {
 
-    private var state: PlayerInteractor.Companion.PlayerState = PlayerInteractor.Companion.PlayerState.PREPARED
+    private var state: PlayerInteractor.Companion.PlayerState =
+        PlayerInteractor.Companion.PlayerState.PREPARED
     override fun getCurrentPosition(): Int {
         return mediaPlayer.currentPosition
     }
@@ -57,5 +58,8 @@ class PlayerImpl(private var mediaPlayer: MediaPlayer, private var url: String):
         } catch (e: IllegalStateException) {
             Log.e(TAG, e.printStackTrace().toString())
         }
+    }
+    companion object {
+        const val TAG = "Player_Implementation"
     }
 }

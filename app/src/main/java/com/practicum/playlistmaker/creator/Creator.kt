@@ -13,8 +13,8 @@ import com.practicum.playlistmaker.search.domain.impl.SearchHistoryInteractorImp
 import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.search.domain.models.HistoryRepository
 import com.practicum.playlistmaker.search.domain.models.TracksRepository
-import com.practicum.playlistmaker.player.data.PlayerImpl
-import com.practicum.playlistmaker.player.domain.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.settings.data.ThemeInteractorImpl
 import com.practicum.playlistmaker.settings.domain.ThemeInteractor
 import com.practicum.playlistmaker.sharing.data.SharingImpl
@@ -36,7 +36,7 @@ object Creator {
     }
 
     fun providePlayerInteractor(url: String): PlayerInteractor {
-        return PlayerImpl(MediaPlayer(), url)
+        return PlayerInteractorImpl(MediaPlayer(), url)
     }
 
     fun provideShareInteractor(): SharingInteractor {
