@@ -12,5 +12,8 @@
         <item name="colorSurfaceVariant">@color/white</item>
         <item name="colorPrimaryInverse">@color/white</item>
         <item name="colorButtonNormal">@color/middle_grey</item>
+
+        <item name="emptySearchDrawable">@drawable/empty_search_dark</item>
+        <item name="connectionFailedDrawable">@drawable/connection_failed_dark</item>
     </style>
 </resources>

@@ -4,21 +4,16 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import com.practicum.playlistmaker.creator.Creator
 
 class App : Application() {
     private lateinit var themePreferences: SharedPreferences
-    private lateinit var searchPreferences: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
         Creator.init(this)
         themePreferences = Creator.getSharedPreferences(THEME_PREFERENCES_NAME)
-        searchPreferences = Creator.getSharedPreferences(HISTORY_PREFERENCES_NAME)
-        switchTheme(isDarkTheme())
-    }
-
-    fun isDarkTheme(): Boolean {
-        return themePreferences.getBoolean(THEME_KEY, false)
+        switchTheme(themePreferences.getBoolean(THEME_KEY, false))
     }
 
     fun switchTheme(isDarkThemeEnabled: Boolean) {
@@ -34,7 +29,6 @@ class App : Application() {
 
     companion object {
         const val THEME_PREFERENCES_NAME = "theme_preferences"
-        const val HISTORY_PREFERENCES_NAME = "search_history"
         const val THEME_KEY = "dark_theme"
     }
 }
