@@ -57,11 +57,4 @@ class SettingsViewModel(private val sharingInteractor: SharingInteractor, privat
         agreementIntent.data = Uri.parse(termsData.toString())
         return Intent.createChooser(agreementIntent, null)
     }
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SettingsViewModel(Creator.provideShareInteractor(), Creator.provideThemeInteractor())
-            }
-        }
-    }
 }

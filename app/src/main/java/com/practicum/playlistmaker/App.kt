@@ -1,18 +1,25 @@
 package com.practicum.playlistmaker
 
 import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.di.settingsModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class App : Application() {
     private lateinit var themePreferences: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
-        Creator.init(this)
-        themePreferences = Creator.getSharedPreferences(THEME_PREFERENCES_NAME)
+        startKoin {
+            androidContext(this@App)
+            modules(settingsModule)
+        }
+
+        themePreferences = baseContext.getSharedPreferences(THEME_PREFERENCES_NAME, Context.MODE_PRIVATE)
         switchTheme(themePreferences.getBoolean(THEME_KEY, false))
     }
 
