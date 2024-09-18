@@ -3,7 +3,6 @@ package com.practicum.playlistmaker.player.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners

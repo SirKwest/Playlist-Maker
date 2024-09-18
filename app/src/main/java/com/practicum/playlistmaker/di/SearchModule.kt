@@ -30,7 +30,7 @@ val searchModule = module {
         TracksRepositoryImpl(get())
     }
 
-    single<TracksInteractor> {
+    factory<TracksInteractor> {
         TracksInteractorImpl(get())
     }
 
@@ -38,7 +38,7 @@ val searchModule = module {
         HistoryRepositoryImpl(get())
     }
 
-    single<SearchHistoryInteractor> {
+    factory<SearchHistoryInteractor> {
         SearchHistoryInteractorImpl(get())
     }
 

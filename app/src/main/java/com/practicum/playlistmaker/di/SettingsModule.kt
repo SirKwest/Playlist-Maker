@@ -16,11 +16,11 @@ val settingsModule = module {
         androidContext().getSharedPreferences(ThemeInteractor.THEME_PREFERENCES_NAME, Context.MODE_PRIVATE)
     }
 
-    single<ThemeInteractor> {
+    factory<ThemeInteractor> {
         ThemeInteractorImpl(get())
     }
 
-    single<SharingInteractor> {
+    factory<SharingInteractor> {
         SharingImpl(get())
     }
 
