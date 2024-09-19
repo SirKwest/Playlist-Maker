@@ -5,11 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.SingleLiveEvent
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.settings.domain.ThemeInteractor
 import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 import com.practicum.playlistmaker.sharing.domain.model.MailData
@@ -56,12 +52,5 @@ class SettingsViewModel(private val sharingInteractor: SharingInteractor, privat
         val agreementIntent = Intent(Intent.ACTION_VIEW)
         agreementIntent.data = Uri.parse(termsData.toString())
         return Intent.createChooser(agreementIntent, null)
-    }
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SettingsViewModel(Creator.provideShareInteractor(), Creator.provideThemeInteractor())
-            }
-        }
     }
 }

@@ -53,7 +53,7 @@ class PlayerInteractorImpl(private var mediaPlayer: MediaPlayer, private var url
 
     override fun release() {
         try {
-            mediaPlayer.release()
+            mediaPlayer.reset()
             state = PlayerInteractor.Companion.PlayerState.COMPLETED
         } catch (e: IllegalStateException) {
             Log.e(TAG, e.printStackTrace().toString())

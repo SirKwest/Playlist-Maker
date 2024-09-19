@@ -3,7 +3,7 @@ package com.practicum.playlistmaker.player.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
@@ -11,6 +11,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -25,8 +26,10 @@ class PlayerActivity: AppCompatActivity() {
         setContentView(binding.root)
         val trackJsonExtra = intent.getStringExtra(SELECTED_TRACK)
         val trackInfo = Gson().fromJson(trackJsonExtra, Track::class.java)
+        viewModel = getViewModel {
+            parametersOf(trackInfo.previewUrl)
+        }
 
-        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(trackInfo.previewUrl!!))[PlayerViewModel::class.java]
         viewModel.observePlayingState().observe(this) { state ->
             viewModel.postActualState()
             when (state) {
