@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.databinding.LibraryPlaylistsFragmentBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
     private var _binding: LibraryPlaylistsFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: PlaylistFragmentViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
