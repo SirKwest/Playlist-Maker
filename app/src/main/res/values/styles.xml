@@ -40,7 +40,6 @@
     </style>
 
     <style name="Toolbar">
-        <item name="navigationIcon">@drawable/ic_arrow_back</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
