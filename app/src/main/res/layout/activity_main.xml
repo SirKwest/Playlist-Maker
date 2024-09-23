@@ -20,10 +20,20 @@
         app:layout_constraintTop_toTopOf="parent"
     />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/smoke"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_navigation_view"
+        />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_navigation_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="?attr/colorAccent"
         app:itemIconTint="@color/navigation_tab_color"
         app:itemTextColor="@color/navigation_tab_color"
         app:menu="@menu/main_nav_menu"
