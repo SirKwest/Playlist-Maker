@@ -8,38 +8,49 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
-import android.view.WindowManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.PlayerActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
-    private val binding: ActivitySearchBinding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
+class SearchFragment : Fragment() {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding: FragmentSearchBinding get() = requireNotNull(_binding) {"Fragment binding must not be null"}
+
     private val viewModel: SearchActivityViewModel by viewModel()
     private var searchValue = ""
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        viewModel.observeScreenState().observe(this) { state ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.observeScreenState().observe(viewLifecycleOwner) { state ->
             settingVisualElements(state)
         }
 
-        binding.searchRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.searchRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.searchRecyclerView.requestLayout()
 
-        binding.searchToolbar.setOnClickListener { super.finish() }
 
         binding.searchField.setOnFocusChangeListener { _, isFocused ->
             if (isFocused && binding.searchField.text.isEmpty() && viewModel.getHistory().isNotEmpty()) {
@@ -71,9 +82,8 @@ class SearchActivity : AppCompatActivity() {
             binding.searchField.setText("")
             settingVisualElements(ScreenStates.ShowList(emptyList(), false))
             /* Hide keyboard after clearing input */
-            val view = this.currentFocus
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(view?.windowToken, 0)
             /* End */
             binding.searchField.clearFocus(); // Hide cursor from input
@@ -94,7 +104,7 @@ class SearchActivity : AppCompatActivity() {
         binding.refreshButton.setOnClickListener { viewModel.searchDebounce(searchValue) }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    /*override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_FIELD_DATA_TAG, searchValue)
     }
@@ -110,7 +120,7 @@ class SearchActivity : AppCompatActivity() {
         /* Show keyboard after restoring instance */
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         /* End */
-    }
+    }*/
 
     private fun clickDebounce() : Boolean {
         val current = isClickAllowed
@@ -137,7 +147,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.emptySearchText.text = getString(R.string.connection_failed)
 
                 val typedValue = TypedValue()
-                theme.resolveAttribute(R.attr.connectionFailedDrawable, typedValue, true)
+                context?.theme?.resolveAttribute(R.attr.connectionFailedDrawable, typedValue, true)
                 binding.emptySearchImage.setImageResource(typedValue.resourceId)
 
                 binding.clearHistoryButton.isVisible = false
@@ -151,7 +161,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.emptySearchImage.isVisible = true
 
                 val typedValue = TypedValue()
-                theme.resolveAttribute(R.attr.emptySearchDrawable, typedValue, true)
+                context?.theme?.resolveAttribute(R.attr.emptySearchDrawable, typedValue, true)
                 binding.emptySearchImage.setImageResource(typedValue.resourceId)
 
                 binding.clearHistoryButton.isVisible = false
@@ -173,9 +183,9 @@ class SearchActivity : AppCompatActivity() {
                         val item = historyAdapter.getTrackByPosition(position)
                         viewModel.addToHistory(item)
                         historyAdapter.notifyDataSetChanged()
-                        val playerActivityIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+                        val playerActivityIntent = Intent(requireContext(), PlayerActivity::class.java)
                         playerActivityIntent.putExtra(PlayerActivity.SELECTED_TRACK, Gson().toJson(item))
-                        this@SearchActivity.startActivity(playerActivityIntent)
+                        startActivity(playerActivityIntent)
                     }
                 })
                 binding.searchRecyclerView.adapter = historyAdapter

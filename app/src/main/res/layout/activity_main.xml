@@ -1,45 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSecondary"
     tools:context=".main.ui.MainActivity"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainFragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:navGraph="@navigation/main_navigation_graph"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/main_navigation_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+    />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/smoke"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_navigation_view"
+        />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/main_navigation_view"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="52dp"
-            android:text="@string/title"
-            android:textColor="@color/white"
-            android:textSize="22sp" />
-    </androidx.appcompat.widget.Toolbar>
-
-
-    <Button
-        android:id="@+id/search"
-        style="@style/MainScreenButton"
-        android:text="@string/search"
-        app:icon="@drawable/ic_search" />
-
-    <Button
-        android:id="@+id/library"
-        style="@style/MainScreenButton"
-        android:text="@string/media_library"
-        app:icon="@drawable/ic_library" />
-
-    <Button
-        android:id="@+id/settings"
-        style="@style/MainScreenButton"
-        android:layout_marginBottom="28dp"
-        android:text="@string/settings"
-        app:icon="@drawable/ic_settings" />
-</LinearLayout>
+        android:background="?attr/colorAccent"
+        app:itemIconTint="@color/navigation_tab_color"
+        app:itemTextColor="@color/navigation_tab_color"
+        app:menu="@menu/main_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+    />
+</androidx.constraintlayout.widget.ConstraintLayout>

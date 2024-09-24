@@ -6,7 +6,6 @@ interface HistoryRepository {
     fun get(): List<Track>
 
     companion object {
-        const val PREFERENCES_NAME = "search_history"
         const val HISTORY_KEY = "searched_tracks"
     }
 }

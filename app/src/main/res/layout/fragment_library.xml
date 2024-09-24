@@ -8,7 +8,6 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/library_toolbar"
-        app:navigationIcon="@drawable/ic_arrow_back"
         app:title="@string/media_library"
         style="@style/Toolbar" />
 
@@ -18,7 +17,6 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorAccent"
         app:tabTextAppearance="@style/TabHeaderStyle" />
-
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/library_view_pager"

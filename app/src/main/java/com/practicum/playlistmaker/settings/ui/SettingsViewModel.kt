@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.settings.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +32,16 @@ class SettingsViewModel(private val sharingInteractor: SharingInteractor, privat
         themeInteractor.saveTheme(isDarkTheme)
     }
 
+    fun switchTheme(isDarkThemeEnabled: Boolean) {
+        themeInteractor.saveTheme(isDarkThemeEnabled)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkThemeEnabled) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        )
+    }
 
     fun onShareClick(shareData: ShareData): Intent {
         val shareIntent = Intent(Intent.ACTION_SEND)
