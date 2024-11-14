@@ -3,8 +3,6 @@ package com.practicum.playlistmaker.search.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -15,11 +13,14 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.PlayerActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -30,7 +31,6 @@ class SearchFragment : Fragment() {
     private var searchValue = ""
 
     private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,29 +104,14 @@ class SearchFragment : Fragment() {
         binding.refreshButton.setOnClickListener { viewModel.searchDebounce(searchValue) }
     }
 
-    /*override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_FIELD_DATA_TAG, searchValue)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchValue = savedInstanceState.getString(SEARCH_FIELD_DATA_TAG, SEARCH_FIELD_DEFAULT_VALUE)
-        if (searchValue.isEmpty())
-            return
-
-        binding.searchField.setText(searchValue)
-        binding.searchField.setSelection(searchValue.length)
-        /* Show keyboard after restoring instance */
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        /* End */
-    }*/
-
     private fun clickDebounce() : Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DELAY_MILLS)
+                isClickAllowed = true
+            }
         }
         return current
     }
@@ -201,8 +186,6 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        const val SEARCH_FIELD_DATA_TAG = "SEARCH_TEXT"
-        const val SEARCH_FIELD_DEFAULT_VALUE = ""
-        const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val CLICK_DELAY_MILLS = 1000L
     }
 }
