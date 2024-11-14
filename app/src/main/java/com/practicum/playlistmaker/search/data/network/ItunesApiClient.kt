@@ -2,6 +2,8 @@ package com.practicum.playlistmaker.search.data.network
 
 import com.practicum.playlistmaker.search.data.dto.Response
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
@@ -15,11 +17,16 @@ class ItunesApiClient: NetworkClient {
 
     private val itunesService = retrofit.create<ItunesApiService>()
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequestSuspend(dto: Any): Response {
         return if (dto is TrackSearchRequest) {
-            val resp = itunesService.search(dto.expression).execute()
-            val body = resp.body() ?: Response()
-            body.apply { resultCode = resp.code() }
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = itunesService.search(dto.expression)
+                    response.apply { resultCode = 200 }
+                } catch (e: Throwable) {
+                    Response().apply { resultCode = 500 }
+                }
+            }
         } else {
             Response().apply { resultCode = 400 }
         }

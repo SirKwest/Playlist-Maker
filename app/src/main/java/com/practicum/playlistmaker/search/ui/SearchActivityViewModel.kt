@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.search.domain.api.SearchHistoryInteractor
-import com.practicum.playlistmaker.search.domain.api.TracksConsumer
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
@@ -50,17 +49,15 @@ class SearchActivityViewModel(
             return
         }
         updateScreenState(ScreenStates.RequestInProgress)
-        tracksInteractor.searchTracks(
-            searchQuery,
-            object : TracksConsumer {
-                override fun consume(foundedTracks: List<Track>) {
-                     handleResponse(foundedTracks)
-                }
-
-                override fun handleError(error: Exception) {
+        viewModelScope.launch {
+            tracksInteractor.searchTracks(searchQuery).collect { pair ->
+                if (pair.second === null) {
+                    handleResponse(pair.first!!)
+                } else {
                     updateScreenState(ScreenStates.ConnectionIssues)
                 }
-            })
+            }
+        }
     }
     private fun handleResponse(tracks: List<Track>) {
         if (tracks.isEmpty()) {
