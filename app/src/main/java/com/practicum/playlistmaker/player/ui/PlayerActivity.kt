@@ -46,6 +46,24 @@ class PlayerActivity: AppCompatActivity() {
             binding.playbackTimer.text = dateFormat.format(it)
         }
 
+        viewModel.observeFavoriteState().observe(this) {
+            if (it) {
+                binding.favoriteButton.setImageResource(R.drawable.favorite)
+            } else {
+                binding.favoriteButton.setImageResource(R.drawable.not_favorite)
+            }
+        }
+
+        binding.favoriteButton.setOnClickListener {
+            viewModel.changeFavoriteStatus(trackInfo)
+        }
+
+        if (trackInfo.isFavorite) {
+            binding.favoriteButton.setImageResource(R.drawable.favorite)
+        } else {
+            binding.favoriteButton.setImageResource(R.drawable.not_favorite)
+        }
+
         binding.playerToolbar.setOnClickListener { super.finish() }
 
         Glide.with(this)

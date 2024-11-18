@@ -53,8 +53,8 @@ class SearchFragment : Fragment() {
 
 
         binding.searchField.setOnFocusChangeListener { _, isFocused ->
-            if (isFocused && binding.searchField.text.isEmpty() && viewModel.getHistory().isNotEmpty()) {
-                settingVisualElements(ScreenStates.ShowList(viewModel.getHistory(), true))
+            if (isFocused && binding.searchField.text.isEmpty()) {
+                viewModel.getHistory()
             } else {
                 settingVisualElements(ScreenStates.Default)
             }

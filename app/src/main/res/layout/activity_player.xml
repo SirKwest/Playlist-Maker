@@ -92,7 +92,7 @@
         android:id="@+id/favorite_button"
         android:layout_width="51dp"
         android:layout_height="51dp"
-        android:src="@drawable/favorite"
+        tools:src="@drawable/not_favorite"
 
         app:layout_constraintEnd_toStartOf="@+id/right_guideline"
         app:layout_constraintBottom_toBottomOf="@+id/play_button"
