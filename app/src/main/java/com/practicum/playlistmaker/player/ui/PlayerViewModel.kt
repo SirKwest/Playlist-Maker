@@ -1,17 +1,20 @@
 package com.practicum.playlistmaker.player.ui
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel() {
     private var currentState: MutableLiveData<PlayerInteractor.Companion.PlayerState> =
         MutableLiveData(PlayerInteractor.Companion.PlayerState.PREPARED)
     private var positionState: MutableLiveData<Int> = MutableLiveData(0)
-    private var threadHandler: Handler = Handler(Looper.getMainLooper())
+
+    private var playerTimerJob: Job? = null
 
     init {
         preparing()
@@ -29,49 +32,50 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel
         currentState.postValue(playerInteractor.getState())
     }
 
+    private fun updateActualState() {
+        currentState.value = playerInteractor.getState()
+        postActualState()
+    }
+
     override fun onCleared() {
         super.onCleared()
         stopTimer()
         playerInteractor.release()
-        currentState.postValue(playerInteractor.getState())
+        updateActualState()
     }
-
-
-    private fun timerProgress() {
-        if (currentState.value !== PlayerInteractor.Companion.PlayerState.STARTED) {
-            return
-        }
-        positionState.postValue(playerInteractor.getCurrentPosition())
-        threadHandler.postDelayed(timerRunnable, TIMER_UPDATE_DELAY)
-    }
-    private val timerRunnable = { timerProgress() }
 
     private fun startTimer() {
-        threadHandler.post(timerRunnable)
+        playerTimerJob?.cancel()
+        playerTimerJob = viewModelScope.launch {
+            while (currentState.value === PlayerInteractor.Companion.PlayerState.STARTED) {
+                delay(TIMER_UPDATE_DELAY_MILLS)
+                positionState.postValue(playerInteractor.getCurrentPosition())
+            }
+        }
     }
 
     private fun stopTimer() {
-        threadHandler.removeCallbacks(timerRunnable)
+        playerTimerJob?.cancel()
     }
 
     private fun pausing() {
         playerInteractor.pause()
-        currentState.postValue(playerInteractor.getState())
+        updateActualState()
     }
 
     private fun preparing() {
         playerInteractor.prepare()
-        currentState.postValue(playerInteractor.getState())
+        updateActualState()
         positionState.postValue(0)
     }
 
     private fun starting() {
         playerInteractor.start()
-        currentState.postValue(playerInteractor.getState())
+        updateActualState()
         startTimer()
     }
 
     companion object {
-        private const val TIMER_UPDATE_DELAY = 300L
+        private const val TIMER_UPDATE_DELAY_MILLS = 300L
     }
 }

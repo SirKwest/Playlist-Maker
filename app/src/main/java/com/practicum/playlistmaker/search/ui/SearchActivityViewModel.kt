@@ -1,15 +1,15 @@
 package com.practicum.playlistmaker.search.ui
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.search.domain.api.SearchHistoryInteractor
-import com.practicum.playlistmaker.search.domain.api.TracksConsumer
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchActivityViewModel(
     private val historyInteractor: SearchHistoryInteractor,
@@ -17,7 +17,8 @@ class SearchActivityViewModel(
 ) : ViewModel() {
 
     private val searchScreenState = MutableLiveData<ScreenStates>()
-    private val handler = Handler(Looper.getMainLooper())
+    private var searchJob: Job? = null
+
     fun observeScreenState(): LiveData<ScreenStates> = searchScreenState
 
     fun clearHistory() {
@@ -36,15 +37,11 @@ class SearchActivityViewModel(
         if (searchQuery.isEmpty()) {
             updateScreenState(ScreenStates.ShowList(getHistory(), true))
         }
-        val searchRunnable = Runnable { search(searchQuery) }
-        handler.removeCallbacksAndMessages(REQUEST_TOKEN)
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(searchRunnable, REQUEST_TOKEN, postTime)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(REQUEST_TOKEN)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DELAY_MILLS)
+            search(searchQuery)
+        }
     }
 
     private fun search(searchQuery: String) {
@@ -52,17 +49,15 @@ class SearchActivityViewModel(
             return
         }
         updateScreenState(ScreenStates.RequestInProgress)
-        tracksInteractor.searchTracks(
-            searchQuery,
-            object : TracksConsumer {
-                override fun consume(foundedTracks: List<Track>) {
-                     handleResponse(foundedTracks)
-                }
-
-                override fun handleError(error: Exception) {
+        viewModelScope.launch {
+            tracksInteractor.searchTracks(searchQuery).collect { pair ->
+                if (pair.second === null) {
+                    handleResponse(pair.first!!)
+                } else {
                     updateScreenState(ScreenStates.ConnectionIssues)
                 }
-            })
+            }
+        }
     }
     private fun handleResponse(tracks: List<Track>) {
         if (tracks.isEmpty()) {
@@ -77,7 +72,6 @@ class SearchActivityViewModel(
     }
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 3000L
-        private val REQUEST_TOKEN = Any()
+        private const val SEARCH_DELAY_MILLS = 3000L
     }
 }
