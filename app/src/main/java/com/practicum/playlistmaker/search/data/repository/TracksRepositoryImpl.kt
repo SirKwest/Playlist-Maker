@@ -27,7 +27,8 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient): TracksRepo
                     it.releaseDate,
                     it.primaryGenreName,
                     it.country,
-                    it.previewUrl
+                    it.previewUrl,
+                    false, //TODO
                 )
             }
             emit(data)

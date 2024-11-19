@@ -9,6 +9,8 @@ import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class SearchActivityViewModel(
@@ -25,8 +27,16 @@ class SearchActivityViewModel(
         historyInteractor.clear()
     }
 
-    fun getHistory(): List<Track> {
-        return historyInteractor.get()
+    fun getHistory() {
+        viewModelScope.launch {
+            historyInteractor.get().collect {
+                if (it.isNotEmpty()) {
+                    updateScreenState(ScreenStates.ShowList(it, false))
+                } else {
+                    updateScreenState(ScreenStates.Default)
+                }
+            }
+        }
     }
 
     fun addToHistory(track: Track) {
@@ -35,7 +45,7 @@ class SearchActivityViewModel(
 
     fun searchDebounce(searchQuery: String) {
         if (searchQuery.isEmpty()) {
-            updateScreenState(ScreenStates.ShowList(getHistory(), true))
+            getHistory()
         }
         searchJob?.cancel()
         searchJob = viewModelScope.launch {

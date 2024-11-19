@@ -4,18 +4,22 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.library.data.db.AppDatabase
 import com.practicum.playlistmaker.search.domain.models.HistoryRepository
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class HistoryRepositoryImpl(private val sharedPreferences: SharedPreferences): HistoryRepository {
+class HistoryRepositoryImpl(private val sharedPreferences: SharedPreferences, private val appDatabase: AppDatabase): HistoryRepository {
     private var data = ArrayList<Track>()
-    override fun get(): ArrayList<Track> {
+    override fun get(): Flow<ArrayList<Track>> = flow {
         val jsonString = sharedPreferences.getString(HistoryRepository.HISTORY_KEY, "")
         data = Gson().fromJson<ArrayList<Track>>(
             jsonString,
             object : TypeToken<ArrayList<Track>>() {}.type
         ) ?: arrayListOf()
-        return data
+        data.map{ it.isFavorite = appDatabase.trackDao().isTrackExist(it.trackId) }
+        emit(data)
     }
 
     override fun add(track: Track) {

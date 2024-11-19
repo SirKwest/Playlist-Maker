@@ -29,7 +29,7 @@ val searchModule = module {
     }
 
     single<HistoryRepository> {
-        HistoryRepositoryImpl(get())
+        HistoryRepositoryImpl(get(), get())
     }
 
     factory<SearchHistoryInteractor> {
