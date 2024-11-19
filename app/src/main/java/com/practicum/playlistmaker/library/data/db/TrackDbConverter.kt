@@ -14,7 +14,8 @@ class TrackDbConverter {
             track.releaseDate.orEmpty(),
             track.primaryGenreName,
             track.country.orEmpty(),
-            track.previewUrl.orEmpty()
+            track.previewUrl.orEmpty(),
+            System.currentTimeMillis().toString()
         )
     }
 

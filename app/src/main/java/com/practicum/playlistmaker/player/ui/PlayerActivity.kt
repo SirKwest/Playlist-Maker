@@ -49,13 +49,16 @@ class PlayerActivity: AppCompatActivity() {
         viewModel.observeFavoriteState().observe(this) {
             if (it) {
                 binding.favoriteButton.setImageResource(R.drawable.favorite)
+                trackInfo.isFavorite = true
             } else {
                 binding.favoriteButton.setImageResource(R.drawable.not_favorite)
+                trackInfo.isFavorite = false
             }
         }
 
         binding.favoriteButton.setOnClickListener {
             viewModel.changeFavoriteStatus(trackInfo)
+            //Toast.makeText(baseContext, "Favorite status was updated", Toast.LENGTH_SHORT).show()
         }
 
         if (trackInfo.isFavorite) {

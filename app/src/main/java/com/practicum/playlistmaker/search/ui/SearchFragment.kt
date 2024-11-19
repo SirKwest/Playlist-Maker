@@ -104,6 +104,11 @@ class SearchFragment : Fragment() {
         binding.refreshButton.setOnClickListener { viewModel.searchDebounce(searchValue) }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getHistory()
+    }
+
     private fun clickDebounce() : Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {

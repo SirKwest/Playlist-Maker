@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.ui
 
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,9 +48,9 @@ class PlayerViewModel(
             } else {
                 favoritesInteractor.addToFavorites(track)
             }
+            favoriteState.postValue(!track.isFavorite)
         }
-        favoriteState.postValue(track.isFavorite.not())
-        track.isFavorite = track.isFavorite.not()
+
     }
 
     private fun updateActualState() {
