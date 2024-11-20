@@ -58,7 +58,6 @@ class PlayerActivity: AppCompatActivity() {
 
         binding.favoriteButton.setOnClickListener {
             viewModel.changeFavoriteStatus(trackInfo)
-            //Toast.makeText(baseContext, "Favorite status was updated", Toast.LENGTH_SHORT).show()
         }
 
         if (trackInfo.isFavorite) {
