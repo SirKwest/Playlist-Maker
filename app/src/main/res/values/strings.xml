@@ -37,4 +37,12 @@
     <string name="cancel">Отмена</string>
     <string name="finish">Завершить</string>
     <string name="permission_image_access_required_for">Разрешение на доступ к изображениям необходимо для выбора обложки</string>
+
+    <plurals name="tracks">
+        <item quantity="few">%1$d трека</item>
+        <item quantity="many">%1$d треков</item>
+        <item quantity="one">%1$d трек</item>
+        <item quantity="two">%1$d трека</item>
+        <item quantity="other">%1$d треков</item>
+    </plurals>
 </resources>

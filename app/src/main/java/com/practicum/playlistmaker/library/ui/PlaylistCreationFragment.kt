@@ -116,7 +116,8 @@ class PlaylistCreationFragment: Fragment() {
                         0,
                         binding.playlistNameTe.text.toString(),
                         binding.playlistDescriptionTe.text.toString(),
-                        fileName.toString()
+                        fileName.toString(),
+                        0
                     )
                 )
             } else {
@@ -125,7 +126,8 @@ class PlaylistCreationFragment: Fragment() {
                         0,
                         binding.playlistNameTe.text.toString(),
                         binding.playlistDescriptionTe.text.toString(),
-                        ""
+                        "",
+                        0
                     )
                 )
             }

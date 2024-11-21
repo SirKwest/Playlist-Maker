@@ -22,6 +22,7 @@
         android:textSize="14sp"/>
 
     <ImageView
+        android:id="@+id/empty_playlist_iv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
@@ -30,6 +31,7 @@
         tools:ignore="contentDescription" />
 
     <TextView
+        android:id="@+id/empty_playlist_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -37,5 +39,10 @@
         android:layout_marginTop="16dp"
         style="@style/FragmentPlaceholderTextStyle"
         android:text="@string/playlist_none"/>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playlist_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
