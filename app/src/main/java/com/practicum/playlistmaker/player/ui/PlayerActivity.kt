@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.player.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -23,18 +24,38 @@ class PlayerActivity: AppCompatActivity() {
 
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val binding: ActivityPlayerBinding by lazy { ActivityPlayerBinding.inflate(layoutInflater) }
+    private var playlistAdapter = BottomSheetPlaylistsAdapter(mutableListOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         val trackJsonExtra = intent.getStringExtra(SELECTED_TRACK)
         val trackInfo = Gson().fromJson(trackJsonExtra, Track::class.java)
+
+
         viewModel = getViewModel {
             parametersOf(trackInfo.previewUrl)
         }
 
+        viewModel.getPlaylistsForBottomSheet()
+
+        viewModel.observeBottomSheetState().observe(this) {state ->
+            if (state is BottomSheetPlaylistsState.ShowPlaylists) {
+                playlistAdapter = BottomSheetPlaylistsAdapter(state.playlists)
+                playlistAdapter.setOnItemClickListener(object : BottomSheetPlaylistsAdapter.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val item = playlistAdapter.getItemByPosition(position)
+                        Toast.makeText(baseContext, "Добавлено в плейлист ${item.name}", Toast.LENGTH_SHORT).show()
+                        playlistAdapter.notifyDataSetChanged()
+                    }
+                })
+                binding.playlistBottomSheetRv.adapter = playlistAdapter
+                playlistAdapter.notifyDataSetChanged()
+            }
+        }
+
         viewModel.observePlayingState().observe(this) { state ->
-            viewModel.postActualState()
+            viewModel.postActualPlayerState()
             when (state) {
                 PlayerInteractor.Companion.PlayerState.STARTED -> binding.playButton.setImageResource(R.drawable.ic_pause)
                 PlayerInteractor.Companion.PlayerState.COMPLETED -> {
@@ -64,6 +85,8 @@ class PlayerActivity: AppCompatActivity() {
         }
         BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
         binding.addToButton.setOnClickListener {
+            viewModel.getPlaylistsForBottomSheet()
+            playlistAdapter.notifyDataSetChanged()
             binding.playerBottomSheet.isVisible = true
             BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_COLLAPSED
         }
@@ -118,13 +141,19 @@ class PlayerActivity: AppCompatActivity() {
         }
 
         binding.playButton.setOnClickListener {
-            viewModel.changeState()
+            viewModel.changePlayerState()
         }
 
         binding.createPlaylistBt.setOnClickListener {
             supportFragmentManager.beginTransaction().replace(R.id.container_fragment, PlaylistCreationFragment()).addToBackStack(null).commit()
             BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPlaylistsForBottomSheet()
+        playlistAdapter.notifyDataSetChanged()
     }
 
     companion object {
