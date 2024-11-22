@@ -120,7 +120,7 @@ class PlaylistCreationFragment: Fragment() {
                         binding.playlistNameTe.text.toString(),
                         binding.playlistDescriptionTe.text.toString(),
                         fileName.toString(),
-                        0
+                        mutableListOf()
                     )
                 )
             } else {
@@ -130,7 +130,7 @@ class PlaylistCreationFragment: Fragment() {
                         binding.playlistNameTe.text.toString(),
                         binding.playlistDescriptionTe.text.toString(),
                         "",
-                        0
+                        mutableListOf()
                     )
                 )
             }

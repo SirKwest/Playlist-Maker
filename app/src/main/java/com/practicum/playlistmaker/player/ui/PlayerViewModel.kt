@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.library.domain.db.FavoritesInteractor
 import com.practicum.playlistmaker.library.domain.db.PlaylistInteractor
+import com.practicum.playlistmaker.library.domain.models.Playlist
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +44,16 @@ class PlayerViewModel(
                     postPlaylistsState(BottomSheetPlaylistsState.ShowPlaylists(playlists))
                 }
             }
+        }
+    }
+
+    fun isTrackAlreadyInPlaylist(track: Track, playlist: Playlist) : Boolean {
+        return false
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.addTrackToPlaylist(track, playlist)
         }
     }
 

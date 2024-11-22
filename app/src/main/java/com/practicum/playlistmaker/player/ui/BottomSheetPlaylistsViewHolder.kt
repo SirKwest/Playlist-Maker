@@ -17,6 +17,6 @@ class BottomSheetPlaylistsViewHolder(private val binding: PlayerBottomSheetPlayl
             .into(binding.playlistBottomSheetIv)
 
         binding.playlistNameBottomSheetTv.text = playlist.name
-        binding.playlistTrackCountBottomSheetTv.text = itemView.resources.getQuantityString(R.plurals.tracks, playlist.tracks, playlist.tracks)
+        binding.playlistTrackCountBottomSheetTv.text = itemView.resources.getQuantityString(R.plurals.tracks, playlist.addedTrackIds.size, playlist.addedTrackIds.size)
     }
 }

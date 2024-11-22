@@ -18,6 +18,6 @@ class PlaylistViewHolder(val binding: PlaylistItemLayoutBinding) : RecyclerView.
             .into(binding.playlistIv)
 
         binding.playlistNameTv.text = playlist.name
-        binding.playlistTrackCountTv.text = itemView.resources.getQuantityString(R.plurals.tracks, playlist.tracks, playlist.tracks)
+        binding.playlistTrackCountTv.text = itemView.resources.getQuantityString(R.plurals.tracks, playlist.addedTrackIds.size, playlist.addedTrackIds.size)
     }
 }

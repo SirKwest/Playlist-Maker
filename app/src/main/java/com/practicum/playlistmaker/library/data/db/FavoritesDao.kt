@@ -5,9 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 @Dao
-interface TrackDao {
+interface FavoritesDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = TrackEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun insertTrack(track: TrackEntity)
 
     @Query("SELECT * FROM favorites_table ORDER BY createdAt DESC")

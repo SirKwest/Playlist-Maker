@@ -45,7 +45,17 @@ class PlayerActivity: AppCompatActivity() {
                 playlistAdapter.setOnItemClickListener(object : BottomSheetPlaylistsAdapter.OnItemClickListener {
                     override fun onItemClick(position: Int) {
                         val item = playlistAdapter.getItemByPosition(position)
-                        Toast.makeText(baseContext, "Добавлено в плейлист ${item.name}", Toast.LENGTH_SHORT).show()
+                        if (viewModel.isTrackAlreadyInPlaylist(trackInfo, item)) {
+                            Toast.makeText(this@PlayerActivity, "Трек уже добавлен в плейлист ${item.name}", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                this@PlayerActivity,
+                                "Добавлено в плейлист ${item.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            viewModel.addTrackToPlaylist(trackInfo, item)
+                            BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
+                        }
                         playlistAdapter.notifyDataSetChanged()
                     }
                 })
