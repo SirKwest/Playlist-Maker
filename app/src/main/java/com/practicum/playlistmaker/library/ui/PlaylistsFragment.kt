@@ -37,8 +37,7 @@ class PlaylistsFragment : Fragment() {
         }
 
         binding.playlistRv.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = PlaylistAdapter(mutableListOf())
-        binding.playlistRv.adapter = adapter
+        viewModel.getPlaylists()
 
         viewModel.observePlaylistState.observe(viewLifecycleOwner) { state ->
             settingVisualElements(state)
@@ -49,7 +48,7 @@ class PlaylistsFragment : Fragment() {
             }
         }
 
-        viewModel.getPlaylists()
+
 
     }
 

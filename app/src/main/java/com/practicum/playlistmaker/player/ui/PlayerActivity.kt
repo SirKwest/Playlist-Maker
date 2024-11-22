@@ -3,12 +3,15 @@ package com.practicum.playlistmaker.player.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
+import com.practicum.playlistmaker.library.ui.PlaylistCreationFragment
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import org.koin.core.parameter.parametersOf
@@ -59,6 +62,12 @@ class PlayerActivity: AppCompatActivity() {
         binding.favoriteButton.setOnClickListener {
             viewModel.changeFavoriteStatus(trackInfo)
         }
+        BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
+        binding.addToButton.setOnClickListener {
+            binding.playerBottomSheet.isVisible = true
+            BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
 
         if (trackInfo.isFavorite) {
             binding.favoriteButton.setImageResource(R.drawable.favorite)
@@ -110,6 +119,11 @@ class PlayerActivity: AppCompatActivity() {
 
         binding.playButton.setOnClickListener {
             viewModel.changeState()
+        }
+
+        binding.createPlaylistBt.setOnClickListener {
+            supportFragmentManager.beginTransaction().replace(R.id.container_fragment, PlaylistCreationFragment()).addToBackStack(null).commit()
+            BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
         }
     }
 

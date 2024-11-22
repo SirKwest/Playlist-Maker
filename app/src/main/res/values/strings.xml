@@ -37,6 +37,7 @@
     <string name="cancel">Отмена</string>
     <string name="finish">Завершить</string>
     <string name="permission_image_access_required_for">Разрешение на доступ к изображениям необходимо для выбора обложки</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
 
     <plurals name="tracks">
         <item quantity="few">%1$d трека</item>

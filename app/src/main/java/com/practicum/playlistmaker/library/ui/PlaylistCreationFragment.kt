@@ -3,7 +3,6 @@ package com.practicum.playlistmaker.library.ui
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
@@ -13,6 +12,9 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isEmpty
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -22,6 +24,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.LibraryPlaylistCreateFragmentBinding
 import com.practicum.playlistmaker.library.domain.models.Playlist
+import com.practicum.playlistmaker.main.ui.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -106,7 +109,7 @@ class PlaylistCreationFragment: Fragment() {
                     filePath.mkdirs()
                 }
                 val fileName =
-                    File(filePath, SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(Date()))
+                    File(filePath, SimpleDateFormat(IMAGE_NAME_FORMAT).format(Date()))
                 val outputStream = FileOutputStream(fileName)
                 BitmapFactory.decodeStream(imageInput)
                     .compress(Bitmap.CompressFormat.PNG, 30, outputStream)
@@ -138,12 +141,28 @@ class PlaylistCreationFragment: Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        requireActivity().findViewById<BottomNavigationView>(R.id.main_navigation_view).visibility = View.GONE
+        val panel = requireActivity().findViewById<BottomNavigationView>(R.id.main_navigation_view)
+        if (panel !== null) {
+            panel.isVisible = false
+            return
+        }
+        val playerLayout = requireActivity().findViewById<ConstraintLayout>(R.id.player_layout)
+        if (playerLayout !== null) {
+            playerLayout.isVisible = false
+        }
     }
 
     override fun onDetach() {
         super.onDetach()
-        requireActivity().findViewById<BottomNavigationView>(R.id.main_navigation_view).visibility = View.VISIBLE
+        val panel = requireActivity().findViewById<BottomNavigationView>(R.id.main_navigation_view)
+        if (panel !== null) {
+            panel.isVisible = true
+            return
+        }
+        val playerLayout = requireActivity().findViewById<ConstraintLayout>(R.id.player_layout)
+        if (playerLayout !== null) {
+            playerLayout.isVisible = true
+        }
     }
 
     override fun onDestroyView() {
@@ -153,6 +172,7 @@ class PlaylistCreationFragment: Fragment() {
 
     companion object {
         const val IMAGE_SUBDIRECTORY_NAME = "PlaylistImages"
+        const val IMAGE_NAME_FORMAT = "dd.MM.yyyy hh:mm:ss"
         fun newInstance() = PlaylistCreationFragment()
     }
 }
