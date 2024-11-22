@@ -48,7 +48,7 @@ class PlayerViewModel(
     }
 
     fun isTrackAlreadyInPlaylist(track: Track, playlist: Playlist) : Boolean {
-        return false
+        return track.trackId in playlist.addedTrackIds
     }
 
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
