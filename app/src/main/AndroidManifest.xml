@@ -19,11 +19,11 @@
         <activity
             android:name=".player.ui.PlayerActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustNothing"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".main.ui.MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

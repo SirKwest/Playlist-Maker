@@ -8,6 +8,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
@@ -46,6 +47,7 @@ class PlaylistCreationFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = LibraryPlaylistCreateFragmentBinding.inflate(inflater, container, false)
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         return binding.root
     }
 
