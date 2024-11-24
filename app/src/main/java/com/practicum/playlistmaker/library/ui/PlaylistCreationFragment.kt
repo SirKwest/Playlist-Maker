@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.library.ui
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -38,8 +40,6 @@ class PlaylistCreationFragment: Fragment() {
     private val binding: LibraryPlaylistCreateFragmentBinding get() = requireNotNull(_binding) {"Fragment playlist creation binding must not be null"}
 
     private val viewModel: PlaylistCreationFragmentViewModel by viewModel()
-
-    private var imageInput: InputStream? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +93,7 @@ class PlaylistCreationFragment: Fragment() {
                     .transform(RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.big_album_cover_dp_rounded)))
                     .into(binding.playlistCoverImage)
                 binding.playlistCoverImage.setImageURI(uri)
-                imageInput = requireContext().contentResolver.openInputStream(uri)
+                viewModel.setCoverImageUri(uri)
 
             }
         }
@@ -103,41 +103,24 @@ class PlaylistCreationFragment: Fragment() {
         }
 
         binding.createPlaylistBt.setOnClickListener {
-            if (imageInput != null) {
-                val filePath = File(
-                    requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                    IMAGE_SUBDIRECTORY_NAME
-                )
-                if (filePath.exists().not()) {
-                    filePath.mkdirs()
-                }
-                val fileName =
-                    File(filePath, SimpleDateFormat(IMAGE_NAME_FORMAT).format(Date()))
-                val outputStream = FileOutputStream(fileName)
-                BitmapFactory.decodeStream(imageInput)
-                    .compress(Bitmap.CompressFormat.PNG, 30, outputStream)
-
+            if (binding.playlistCoverImage.drawable !== null) {
                 viewModel.createPlaylist(
-                    Playlist(
-                        0,
-                        binding.playlistNameTe.text.toString(),
-                        binding.playlistDescriptionTe.text.toString(),
-                        fileName.toString(),
-                        mutableListOf()
-                    )
+                    binding.playlistNameTe.text.toString(),
+                    binding.playlistDescriptionTe.text.toString(),
+                    binding.playlistCoverImage.drawable.toBitmap()
                 )
             } else {
                 viewModel.createPlaylist(
-                    Playlist(
-                        0,
-                        binding.playlistNameTe.text.toString(),
-                        binding.playlistDescriptionTe.text.toString(),
-                        "",
-                        mutableListOf()
-                    )
+                    binding.playlistNameTe.text.toString(),
+                    binding.playlistDescriptionTe.text.toString(),
+                    null
                 )
             }
-            Toast.makeText(requireContext(), "Playlist ${binding.playlistNameTe.text.toString()} created", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "Playlist ${binding.playlistNameTe.text.toString()} created",
+                Toast.LENGTH_SHORT
+            ).show()
             requireActivity().supportFragmentManager.popBackStack()
         }
     }
