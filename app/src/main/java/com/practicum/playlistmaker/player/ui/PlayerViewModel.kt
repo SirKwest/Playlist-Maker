@@ -1,11 +1,12 @@
 package com.practicum.playlistmaker.player.ui
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.library.domain.db.FavoritesInteractor
+import com.practicum.playlistmaker.library.domain.db.PlaylistInteractor
+import com.practicum.playlistmaker.library.domain.models.Playlist
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
@@ -16,28 +17,58 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(
     private val playerInteractor: PlayerInteractor,
     private val favoritesInteractor: FavoritesInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ): ViewModel() {
     private var currentState: MutableLiveData<PlayerInteractor.Companion.PlayerState> =
         MutableLiveData(PlayerInteractor.Companion.PlayerState.PREPARED)
     private var positionState: MutableLiveData<Int> = MutableLiveData(0)
     private var favoriteState: MutableLiveData<Boolean> = MutableLiveData()
+    private val bottomSheetPlaylistsState = MutableLiveData<BottomSheetPlaylistsState>()
 
     private var playerTimerJob: Job? = null
 
     init {
-        preparing()
+        preparingPlayer()
     }
     fun observePlayingState(): LiveData<PlayerInteractor.Companion.PlayerState> = currentState
     fun observePositionState(): LiveData<Int> = positionState
     fun observeFavoriteState(): LiveData<Boolean> = favoriteState
-    fun changeState() {
-        when (currentState.value) {
-            PlayerInteractor.Companion.PlayerState.STARTED -> pausing()
-            else -> starting()
+    fun observeBottomSheetState(): LiveData<BottomSheetPlaylistsState> = bottomSheetPlaylistsState
+
+    fun getPlaylistsForBottomSheet() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect{playlists ->
+                if (playlists.isEmpty()) {
+                    postPlaylistsState(BottomSheetPlaylistsState.Empty)
+                } else {
+                    postPlaylistsState(BottomSheetPlaylistsState.ShowPlaylists(playlists))
+                }
+            }
         }
     }
 
-    fun postActualState() {
+    fun isTrackAlreadyInPlaylist(track: Track, playlist: Playlist) : Boolean {
+        return track.trackId in playlist.addedTrackIds
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.addTrackToPlaylist(track, playlist)
+        }
+    }
+
+    private fun postPlaylistsState(state: BottomSheetPlaylistsState) {
+        bottomSheetPlaylistsState.postValue(state)
+    }
+
+    fun changePlayerState() {
+        when (currentState.value) {
+            PlayerInteractor.Companion.PlayerState.STARTED -> pausing()
+            else -> startingPlayer()
+        }
+    }
+
+    fun postActualPlayerState() {
         currentState.postValue(playerInteractor.getState())
     }
 
@@ -50,19 +81,19 @@ class PlayerViewModel(
             }
             favoriteState.postValue(!track.isFavorite)
         }
-
     }
 
-    private fun updateActualState() {
+
+    private fun updateActualPlayerState() {
         currentState.value = playerInteractor.getState()
-        postActualState()
+        postActualPlayerState()
     }
 
     override fun onCleared() {
         super.onCleared()
         stopTimer()
         playerInteractor.release()
-        updateActualState()
+        updateActualPlayerState()
     }
 
     private fun startTimer() {
@@ -81,18 +112,18 @@ class PlayerViewModel(
 
     private fun pausing() {
         playerInteractor.pause()
-        updateActualState()
+        updateActualPlayerState()
     }
 
-    private fun preparing() {
+    private fun preparingPlayer() {
         playerInteractor.prepare()
-        updateActualState()
+        updateActualPlayerState()
         positionState.postValue(0)
     }
 
-    private fun starting() {
+    private fun startingPlayer() {
         playerInteractor.start()
-        updateActualState()
+        updateActualPlayerState()
         startTimer()
     }
 
