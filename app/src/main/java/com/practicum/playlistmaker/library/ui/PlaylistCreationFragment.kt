@@ -52,7 +52,8 @@ class PlaylistCreationFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.onBackPressedDispatcher?.addCallback(
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (
@@ -78,7 +79,7 @@ class PlaylistCreationFragment: Fragment() {
         }
 
         binding.playlistNameTe.doOnTextChanged { text, _, _, _ ->
-            binding.createPlaylistBt.isEnabled = text.isNullOrEmpty().not()
+            binding.createPlaylistBt.isEnabled = text.isNullOrBlank().not()
         }
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->

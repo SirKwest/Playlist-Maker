@@ -96,7 +96,6 @@ class PlayerActivity: AppCompatActivity() {
         BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
         binding.addToButton.setOnClickListener {
             viewModel.getPlaylistsForBottomSheet()
-            playlistAdapter.notifyDataSetChanged()
             binding.playerBottomSheet.isVisible = true
             BottomSheetBehavior.from(binding.playerBottomSheet).state = BottomSheetBehavior.STATE_COLLAPSED
         }
