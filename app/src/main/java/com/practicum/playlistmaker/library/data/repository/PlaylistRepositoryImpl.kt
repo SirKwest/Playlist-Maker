@@ -28,6 +28,10 @@ class PlaylistRepositoryImpl(private val appDatabase: AppDatabase, private val c
         appDatabase.tracksDao().insertRecord(PlaylistsTracksEntity(0, playlist.id, track.trackId))
     }
 
+    override suspend fun deleteTrackFromPlaylist(track: Track, playlist: Playlist) {
+        appDatabase.tracksDao().deleteTrackRecord(track.trackId, playlist.id)
+    }
+
     private suspend fun convertPlaylistFromDbEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist ->
 
