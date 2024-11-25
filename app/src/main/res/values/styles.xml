@@ -109,6 +109,7 @@
 
     <style name="TextInputEditStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextColor">@color/yp_blue</item>
+        <item name="boxStrokeColor">@color/text_input_edit_container_color</item>
     </style>
 
     <style name="PlaylistOnListItemStyle">
