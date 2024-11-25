@@ -8,23 +8,23 @@ import com.practicum.playlistmaker.library.domain.db.PlaylistInteractor
 import kotlinx.coroutines.launch
 
 class PlaylistFragmentViewModel(private val playlistInteractor: PlaylistInteractor) : ViewModel() {
-    private val playlistsStateLiveData = MutableLiveData<PlaylistScreenState>()
+    private val playlistsStateLiveData = MutableLiveData<PlaylistsScreenState>()
 
-    val observePlaylistState: LiveData<PlaylistScreenState> = playlistsStateLiveData
+    val observePlaylistState: LiveData<PlaylistsScreenState> = playlistsStateLiveData
 
     fun getPlaylists() {
         viewModelScope.launch {
             playlistInteractor.getPlaylists().collect { playlists ->
                 if (playlists.isEmpty()) {
-                    updateState(PlaylistScreenState.EmptyScreen)
+                    updateState(PlaylistsScreenState.EmptyScreen)
                 } else {
-                    updateState(PlaylistScreenState.ShowPlaylists(playlists))
+                    updateState(PlaylistsScreenState.ShowPlaylists(playlists))
                 }
             }
         }
     }
 
-    private fun updateState(state: PlaylistScreenState) {
+    private fun updateState(state: PlaylistsScreenState) {
         playlistsStateLiveData.postValue(state)
     }
 }

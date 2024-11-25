@@ -8,7 +8,7 @@ import com.practicum.playlistmaker.databinding.PlaylistItemLayoutBinding
 import com.practicum.playlistmaker.library.domain.models.Playlist
 
 
-class PlaylistViewHolder(val binding: PlaylistItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+class PlaylistsViewHolder(val binding: PlaylistItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(playlist: Playlist) {
         Glide.with(itemView)
             .load(playlist.imagePath)

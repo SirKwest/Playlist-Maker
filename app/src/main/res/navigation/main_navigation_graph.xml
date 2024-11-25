@@ -17,6 +17,14 @@
         <action
             android:id="@+id/actionLibraryToPlaylistCreation"
             app:destination="@id/playlistCreationFragment" />
+        <action
+            android:id="@+id/actionLibraryToPlaylistDetails"
+            app:destination="@id/playlistDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistDetailsFragment"
+        android:name="com.practicum.playlistmaker.library.ui.PlaylistDetailsFragment"
+        android:label="PlaylistDetailsFragment">
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

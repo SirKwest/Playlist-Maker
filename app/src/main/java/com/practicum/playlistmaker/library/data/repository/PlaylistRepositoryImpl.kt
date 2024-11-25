@@ -4,7 +4,6 @@ import com.practicum.playlistmaker.library.data.db.AppDatabase
 import com.practicum.playlistmaker.library.data.db.PlaylistDbConverter
 import com.practicum.playlistmaker.library.data.db.PlaylistEntity
 import com.practicum.playlistmaker.library.data.db.PlaylistsTracksEntity
-import com.practicum.playlistmaker.library.data.db.TrackEntity
 import com.practicum.playlistmaker.library.domain.models.Playlist
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +17,11 @@ class PlaylistRepositoryImpl(private val appDatabase: AppDatabase, private val c
     override suspend fun getPlaylists(): Flow<List<Playlist>> = flow {
         val playLists = appDatabase.playlistDao().getPlaylists()
         emit(convertPlaylistFromDbEntity(playLists))
+    }
+
+    override suspend fun getPlaylistById(id: Int): Flow<Playlist> = flow {
+        val playlist = appDatabase.playlistDao().getPlaylistById(id)
+        emit(converter.map(playlist))
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {

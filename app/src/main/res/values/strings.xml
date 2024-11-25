@@ -5,6 +5,7 @@
     <string name="media_library">Медиатека</string>
     <string name="settings">Настройки</string>
     <string name="dark_theme">Темная тема</string>
+    <string name="share">Поделиться</string>
     <string name="share_application">Поделиться приложением</string>
     <string name="write_to_support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
@@ -38,6 +39,8 @@
     <string name="finish">Завершить</string>
     <string name="permission_image_access_required_for">Разрешение на доступ к изображениям необходимо для выбора обложки</string>
     <string name="add_to_playlist">Добавить в плейлист</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete_playlist">Удалить плейлист</string>
 
     <plurals name="tracks">
         <item quantity="few">%1$d трека</item>
