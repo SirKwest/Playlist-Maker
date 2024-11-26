@@ -16,6 +16,7 @@ import com.practicum.playlistmaker.library.ui.FavoritesFragmentViewModel
 import com.practicum.playlistmaker.library.ui.PlaylistFragmentViewModel
 import com.practicum.playlistmaker.library.ui.PlaylistCreationFragmentViewModel
 import com.practicum.playlistmaker.library.ui.PlaylistDetailsFragmentViewModel
+import com.practicum.playlistmaker.library.ui.PlaylistEditFragmentViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
@@ -26,6 +27,7 @@ val libraryModule = module {
     viewModelOf(::PlaylistFragmentViewModel)
     viewModelOf(::PlaylistCreationFragmentViewModel)
     viewModelOf(::PlaylistDetailsFragmentViewModel)
+    viewModelOf(::PlaylistEditFragmentViewModel)
 
     single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db").build() }
 
@@ -42,7 +44,7 @@ val libraryModule = module {
     }
 
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(get(), get())
+        PlaylistRepositoryImpl(get(), get(), get())
     }
 
     single<PlaylistInteractor> {

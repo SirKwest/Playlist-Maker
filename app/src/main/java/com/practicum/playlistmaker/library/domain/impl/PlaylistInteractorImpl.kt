@@ -19,6 +19,10 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         return playlistRepository.getPlaylistById(id)
     }
 
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        playlistRepository.addPlaylist(playlist)
+    }
+
     override suspend fun getTracksByIds(ids: List<Int>): Flow<List<Track>> {
         TODO("Not yet implemented")
     }
@@ -31,4 +35,7 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         return playlistRepository.deleteTrackFromPlaylist(track, playlist)
     }
 
+    override suspend fun deletePlaylistById(id: Int) {
+        return playlistRepository.deletePlaylistById(id)
+    }
 }

@@ -6,14 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,6 +30,7 @@ import com.practicum.playlistmaker.search.ui.SearchFragment
 import com.practicum.playlistmaker.search.ui.TrackListAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class PlaylistDetailsFragment : Fragment() {
     private var _binding: PlaylistDetailsFragmentBinding? = null
@@ -36,6 +41,9 @@ class PlaylistDetailsFragment : Fragment() {
     private var isClickAllowed = true
 
     private var playlistInfo: Playlist? = null
+
+    private lateinit var menuBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var playlistBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +62,9 @@ class PlaylistDetailsFragment : Fragment() {
         }
         viewModel.getPlaylistById(requireArguments().getInt(BUNDLE_PLAYLIST_ID_KEY))
 
+        menuBottomSheetBehavior = BottomSheetBehavior.from(binding.playlistMenuBottomSheet)
+        playlistBottomSheetBehavior = BottomSheetBehavior.from(binding.playlistDetailsBottomSheet)
+
         viewModel.observePlaylistState().observe(viewLifecycleOwner) {playlist ->
             playlistInfo = playlist
             Glide.with(this)
@@ -62,6 +73,15 @@ class PlaylistDetailsFragment : Fragment() {
                 .centerCrop()
                 .transform(RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.big_album_cover_dp_rounded)))
                 .into(binding.playlistDetailsCoverIv)
+            Glide.with(this)
+                .load(playlist.imagePath)
+                .placeholder(R.drawable.track_placeholder)
+                .centerCrop()
+                .transform(RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.big_album_cover_dp_rounded)))
+                .into(binding.playlistMiniImageIv)
+            binding.playlist.text = playlist.name
+            binding.count.text =
+                resources.getQuantityString(R.plurals.tracks, playlist.addedTrackIds.size, playlist.addedTrackIds.size)
 
             binding.playlistDetailsDescriptionTv.text = playlist.description
             binding.playlistDetailsNameTv.text = playlist.name
@@ -104,6 +124,78 @@ class PlaylistDetailsFragment : Fragment() {
                 viewModel.calculateCombinedTracksDuration(tracks, "mm").toInt()
             )
         }
+        binding.playlistDetailsShareButtonIv.setOnClickListener {
+            if (playlistInfo?.addedTrackIds.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), R.string.cannot_share_empty_playlist, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            lifecycleScope.launch {
+                startActivity(viewModel.sharePlaylist(playlistInfo))
+            }
+        }
+        menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        binding.playlistDetailsMenuDotsIv.setOnClickListener {
+            binding.playlistMenuBottomSheet.isVisible = true
+            playlistBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.playlistDetailsBottomSheet.isEnabled = false
+            binding.playlistDetailsBottomSheet.isVisible = false
+            menuBottomSheetBehavior.addBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(p0: View, state: Int) {
+                    binding.playlistDetailsBottomSheet.isEnabled = state == BottomSheetBehavior.STATE_HIDDEN
+                }
+
+                override fun onSlide(p0: View, p1: Float) {}
+            })
+        }
+
+
+        binding.playlistDetailsMenuShareTv.setOnClickListener {
+            binding.playlistDetailsShareButtonIv.callOnClick()
+        }
+        binding.playlistDetailsMenuEditTv.setOnClickListener {
+            if (playlistInfo !== null) {
+                findNavController().navigate(
+                    R.id.playlistEditFragment,
+                    Bundle().apply { putInt(BUNDLE_PLAYLIST_ID_KEY, playlistInfo!!.id) }
+                )
+            }
+        }
+        binding.playlistDetailsMenuDeleteTv.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.do_you_want_to_delete_playlist_name, playlistInfo?.name))
+                .setNegativeButton(R.string.no) { _, _ -> }
+                .setPositiveButton(R.string.yes) { dialog, which ->
+                    lifecycleScope.launch {
+                        viewModel.deletePlaylist(playlistInfo!!)
+                    }
+                    requireActivity().supportFragmentManager.popBackStack()
+                }.show()
+        }
+
+        binding.playlistDetailsNameTv.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.playlistDetailsNameTv.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val coordinates = IntArray(2)
+                binding.playlistDetailsNameTv.getLocationOnScreen(coordinates)
+                val Y = coordinates[1]
+                menuBottomSheetBehavior.peekHeight = resources.displayMetrics.heightPixels - Y
+            }
+        })
+
+        binding.playlistDetailsMenuDotsIv.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.playlistDetailsMenuDotsIv.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val coordinates = IntArray(2)
+                binding.playlistDetailsMenuDotsIv.getLocationOnScreen(coordinates)
+                val Y = coordinates[1]
+                playlistBottomSheetBehavior.peekHeight = resources.displayMetrics.heightPixels - Y - resources.getDimensionPixelSize(R.dimen.icon_margin_large)
+            }
+        })
     }
 
     override fun onAttach(context: Context) {
@@ -136,6 +228,26 @@ class PlaylistDetailsFragment : Fragment() {
             }
         }
         return current
+    }
+
+    private fun calculateMenuPeekHeight(): Int {
+        val screenHeight = resources.displayMetrics.heightPixels
+        val playlistNamePosition = IntArray(2)
+        binding.playlistDetailsMenuDotsIv.getLocationOnScreen(playlistNamePosition)
+        val playlistNameBottomY = playlistNamePosition[1]
+        val bottomSheetPeekHeight = screenHeight - playlistNameBottomY
+
+        return bottomSheetPeekHeight
+    }
+
+    private fun calculatePlaylistPeekHeight(): Int {
+        val screenHeight = resources.displayMetrics.heightPixels
+        val playlistNamePosition = IntArray(2)
+        binding.playlistDetailsDescriptionTv.getLocationOnScreen(playlistNamePosition)
+        val playlistNameBottomY = playlistNamePosition[1]
+        val bottomSheetPeekHeight = screenHeight - playlistNameBottomY
+
+        return bottomSheetPeekHeight
     }
 
     companion object {
