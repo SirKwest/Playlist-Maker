@@ -37,7 +37,6 @@ class PlaylistEditFragment : PlaylistCreationFragment() {
                 .centerCrop()
                 .transform(RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.big_album_cover_dp_rounded)))
                 .into(binding.playlistCoverImage)
-            binding.playlistCoverImage.setImageDrawable(null)
             binding.playlistNameTe.setText(playlist.name)
             binding.playlistDescriptionTe.setText(playlist.description)
         }
