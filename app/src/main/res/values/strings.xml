@@ -51,6 +51,7 @@
     <string name="choose_app_for_share">Выберите приложение для отправки</string>
     <string name="do_you_want_to_delete_playlist_name">Хотите удалить плейлист \"%1$s\" ?</string>
     <string name="save">Сохранить</string>
+    <string name="playlist_doesnot_have_tracks">Плейлист не имеет треков</string>
 
     <plurals name="tracks">
         <item quantity="few">%1$d трека</item>

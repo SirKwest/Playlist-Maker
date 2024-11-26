@@ -89,7 +89,9 @@ class PlaylistDetailsFragment : Fragment() {
         }
 
         viewModel.observeTracksState().observe(viewLifecycleOwner) { tracks ->
+            binding.playlistNoTracksTv.isVisible = tracks.isEmpty()
             val historyAdapter = TrackListAdapter(tracks)
+
             historyAdapter.setOnItemClickListener(object :
                 TrackListAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int) {

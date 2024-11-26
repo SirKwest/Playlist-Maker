@@ -32,7 +32,10 @@ class PlaylistDetailsFragmentViewModel(
                 playlistLiveData.postValue(playlist)
                 if (playlist.addedTrackIds.isEmpty().not()) {
                     playlistInteractor.getTracksByIds(playlist.addedTrackIds).collect {tracks ->
-                        tracksLiveData.postValue(tracks)
+                        val sortedTracks: MutableList<Track> = mutableListOf()
+                        playlist.addedTrackIds.forEach {trackId -> tracks.find { track -> track.trackId == trackId }
+                            ?.let { sortedTracks.add(it) } }
+                        tracksLiveData.postValue(sortedTracks)
                     }
                 } else {
                     tracksLiveData.postValue(listOf())

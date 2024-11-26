@@ -10,9 +10,6 @@ interface TracksDao {
     @Insert(entity = TrackEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun insertTrack(track: TrackEntity)
 
-    @Query("SELECT * FROM tracks ORDER BY createdAt DESC")
-    suspend fun getTracks(): List<TrackEntity>
-
     @Query("SELECT * FROM tracks WHERE trackId IN (:ids)")
     suspend fun getTracksByIds(ids: List<Int>) : List<TrackEntity>
 

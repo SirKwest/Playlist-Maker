@@ -7,7 +7,7 @@ import androidx.room.Query
 
 @Dao
 interface PlaylistTracksDao {
-    @Query("SELECT trackId FROM playlist_tracks_table WHERE playlistId = :playlistId")
+    @Query("SELECT trackId FROM playlist_tracks_table WHERE playlistId = :playlistId ORDER BY id DESC")
     suspend fun getAllTrackIdsByPlaylistId(playlistId: Int) : List<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

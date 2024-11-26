@@ -136,6 +136,14 @@
             android:background="?attr/colorOnSecondary"
         />
 
+        <TextView
+            android:id="@+id/playlist_no_tracks_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playlist_doesnot_have_tracks"
+            style="FragmentPlaceholderTextStyle"
+        />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playlist_details_bottom_sheet_rv"
             android:layout_width="match_parent"
