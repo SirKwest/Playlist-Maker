@@ -14,9 +14,18 @@
         android:name="com.practicum.playlistmaker.library.ui.LibraryFragment"
         android:label="LibraryFragment"
         tools:layout="@layout/fragment_library">
+        <action
+            android:id="@+id/actionLibraryToPlaylistCreation"
+            app:destination="@id/playlistCreationFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.practicum.playlistmaker.settings.ui.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/playlistCreationFragment"
+        android:name="com.practicum.playlistmaker.library.ui.PlaylistCreationFragment"
+        android:label="PlaylistCreationFragment"
+        tools:layout="@layout/library_playlist_create_fragment"
+        />
 </navigation>
