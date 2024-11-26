@@ -26,6 +26,10 @@ class PlaylistRepositoryImpl(private val appDatabase: AppDatabase, private val c
         emit(converter.map(playlist))
     }
 
+    override suspend fun getPlaylistIdsByTrackId(trackId: Int): Flow<List<Int>> = flow {
+        emit(appDatabase.playlistTracksDao().getPlaylistIdsByTrackId(trackId))
+    }
+
     override suspend fun getTracksByIds(ids: List<Int>): Flow<List<Track>> = flow {
         val tracks = appDatabase.tracksDao().getTracksByIds(ids)
         val result = tracks.map { track -> trackDbConverter.map(track) }

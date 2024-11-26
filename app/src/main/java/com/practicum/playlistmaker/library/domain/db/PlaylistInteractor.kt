@@ -20,5 +20,7 @@ interface PlaylistInteractor {
 
     suspend fun deleteTrackFromPlaylist(track: Track, playlist: Playlist)
 
+    suspend fun getPlaylistIdsByTrackId(trackId: Int): Flow<List<Int>>
+
     suspend fun deletePlaylistById(id: Int)
 }

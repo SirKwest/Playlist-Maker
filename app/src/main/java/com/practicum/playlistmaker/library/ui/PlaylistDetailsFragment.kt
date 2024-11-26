@@ -163,6 +163,9 @@ class PlaylistDetailsFragment : Fragment() {
 
         binding.playlistDetailsMenuShareTv.setOnClickListener {
             binding.playlistDetailsShareButtonIv.callOnClick()
+            if (playlistInfo == null || playlistInfo!!.addedTrackIds.isNullOrEmpty()) {
+                menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
         }
         binding.playlistDetailsMenuEditTv.setOnClickListener {
             if (playlistInfo !== null) {

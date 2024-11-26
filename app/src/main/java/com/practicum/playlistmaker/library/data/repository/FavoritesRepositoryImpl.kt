@@ -21,6 +21,10 @@ class FavoritesRepositoryImpl(
         appDatabase.tracksDao().insertTrack(trackDbConverter.map(track))
     }
 
+    override fun removeTrackRecord(trackId: Int) {
+        appDatabase.tracksDao().removeTrack(trackId)
+    }
+
     override fun removeFromFavorite(trackId: Int) {
         appDatabase.tracksDao().removeFromFavorites(trackId)
     }
