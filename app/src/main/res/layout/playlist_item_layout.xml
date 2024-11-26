@@ -10,7 +10,8 @@
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorAccent">
 
     <ImageView
         android:id="@+id/playlist_iv"
@@ -19,7 +20,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="4dp"
-        android:layout_gravity="start|center_vertical"
+        android:scaleType="centerCrop"
         tools:ignore="ContentDescription" />
 
     <TextView

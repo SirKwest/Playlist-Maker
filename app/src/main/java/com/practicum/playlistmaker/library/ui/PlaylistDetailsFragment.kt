@@ -133,12 +133,12 @@ class PlaylistDetailsFragment : Fragment() {
             )
         }
         binding.playlistDetailsShareButtonIv.setOnClickListener {
-            if (playlistInfo?.addedTrackIds.isNullOrEmpty()) {
+            if (playlistInfo == null || playlistInfo!!.addedTrackIds.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), R.string.cannot_share_empty_playlist, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             lifecycleScope.launch {
-                startActivity(viewModel.sharePlaylist(playlistInfo))
+                startActivity(viewModel.sharePlaylist(playlistInfo!!))
             }
         }
         menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

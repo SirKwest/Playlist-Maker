@@ -31,7 +31,7 @@ class SearchActivityViewModel(
         viewModelScope.launch {
             historyInteractor.get().collect {
                 if (it.isNotEmpty()) {
-                    updateScreenState(ScreenStates.ShowList(it, false))
+                    updateScreenState(ScreenStates.ShowList(it, true))
                 } else {
                     updateScreenState(ScreenStates.Default)
                 }

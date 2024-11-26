@@ -18,7 +18,6 @@ class HistoryRepositoryImpl(private val sharedPreferences: SharedPreferences, pr
             jsonString,
             object : TypeToken<ArrayList<Track>>() {}.type
         ) ?: arrayListOf()
-        data.map{ it.isFavorite = appDatabase.tracksDao().isTrackExist(it.trackId) }
         emit(data)
     }
 

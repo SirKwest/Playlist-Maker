@@ -140,8 +140,11 @@
             android:id="@+id/playlist_no_tracks_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="16dp"
+            style="@style/FragmentPlaceholderTextStyle"
             android:text="@string/playlist_doesnot_have_tracks"
-            style="FragmentPlaceholderTextStyle"
         />
 
         <androidx.recyclerview.widget.RecyclerView

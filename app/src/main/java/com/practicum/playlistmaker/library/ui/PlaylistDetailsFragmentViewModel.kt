@@ -66,10 +66,10 @@ class PlaylistDetailsFragmentViewModel(
     }
 
 
-    fun sharePlaylist(playlist: Playlist?): Intent {
+    fun sharePlaylist(playlist: Playlist): Intent {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
-        var message = application.getString(R.string.playlists) + " \"${playlist!!.name}\"\n" + "${playlist.description ?: ""}\n" + "${
+        var message = application.getString(R.string.playlist) + " \"${playlist.name}\"\n" + "${playlist.description ?: ""}\n" + "${
             application.resources.getQuantityString(
                 R.plurals.tracks,
                 playlist.addedTrackIds.size,
