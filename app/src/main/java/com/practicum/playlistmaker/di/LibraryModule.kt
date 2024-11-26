@@ -29,7 +29,7 @@ val libraryModule = module {
     viewModelOf(::PlaylistDetailsFragmentViewModel)
     viewModelOf(::PlaylistEditFragmentViewModel)
 
-    single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db").build() }
+    single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db").fallbackToDestructiveMigration().build() }
 
     factory { TrackDbConverter() }
 

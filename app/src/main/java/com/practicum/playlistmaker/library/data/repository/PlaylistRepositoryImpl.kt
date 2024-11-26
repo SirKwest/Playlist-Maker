@@ -13,36 +13,42 @@ import kotlinx.coroutines.flow.flow
 
 class PlaylistRepositoryImpl(private val appDatabase: AppDatabase, private val converter: PlaylistDbConverter, private val trackDbConverter: TrackDbConverter) : PlaylistRepository {
     override suspend fun addPlaylist(playlist: Playlist) {
-        appDatabase.playlistDao().insertPlaylist(converter.map(playlist))
+        appDatabase.playlistsDao().insertPlaylist(converter.map(playlist))
     }
 
     override suspend fun getPlaylists(): Flow<List<Playlist>> = flow {
-        val playLists = appDatabase.playlistDao().getPlaylists()
+        val playLists = appDatabase.playlistsDao().getPlaylists()
         emit(convertPlaylistFromDbEntity(playLists))
     }
 
     override suspend fun getPlaylistById(id: Int): Flow<Playlist> = flow {
-        val playlist = appDatabase.playlistDao().getPlaylistById(id)
+        val playlist = appDatabase.playlistsDao().getPlaylistById(id)
         emit(converter.map(playlist))
+    }
+
+    override suspend fun getTracksByIds(ids: List<Int>): Flow<List<Track>> = flow {
+        val tracks = appDatabase.tracksDao().getTracksByIds(ids)
+        val result = tracks.map { track -> trackDbConverter.map(track) }
+        emit(result)
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         appDatabase.withTransaction {
-            appDatabase.tracksDao()
+            appDatabase.playlistTracksDao()
                 .insertRecord(PlaylistsTracksEntity(0, playlist.id, track.trackId))
-            appDatabase.favoritesDao().insertTrack(trackDbConverter.map(track))
+            appDatabase.tracksDao().insertTrack(trackDbConverter.map(track))
         }
     }
 
     override suspend fun deleteTrackFromPlaylist(track: Track, playlist: Playlist) {
-        appDatabase.tracksDao().deleteTrackRecord(track.trackId, playlist.id)
+        appDatabase.playlistTracksDao().deleteTrackRecord(track.trackId, playlist.id)
     }
 
 
     override suspend fun deletePlaylistById(id: Int) {
         appDatabase.withTransaction {
-            appDatabase.playlistDao().deletePlaylistById(id)
-            appDatabase.tracksDao().deleteTracksByPlaylistId(id)
+            appDatabase.playlistsDao().deletePlaylistById(id)
+            appDatabase.playlistTracksDao().deleteTracksByPlaylistId(id)
         }
     }
 

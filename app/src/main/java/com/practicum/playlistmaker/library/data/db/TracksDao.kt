@@ -4,21 +4,27 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-
 @Dao
 interface TracksDao {
-    @Query("SELECT trackId FROM playlist_tracks_table WHERE playlistId = :playlistId")
-    suspend fun getAllTrackIdsByPlaylistId(playlistId: Int) : List<Int>
 
-    @Query("SELECT playlistId FROM playlist_tracks_table WHERE trackId = :trackId")
-    suspend fun getAllPlaylistsByTrackId(trackId: Int) : List<Int>
+    @Insert(entity = TrackEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertTrack(track: TrackEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecord(playlistsTracksEntity: PlaylistsTracksEntity)
+    @Query("SELECT * FROM tracks ORDER BY createdAt DESC")
+    suspend fun getTracks(): List<TrackEntity>
 
-    @Query("DELETE FROM playlist_tracks_table WHERE playlistId = :playlistId AND trackId = :trackId")
-    suspend fun deleteTrackRecord(trackId: Int, playlistId: Int)
+    @Query("SELECT * FROM tracks WHERE trackId IN (:ids)")
+    suspend fun getTracksByIds(ids: List<Int>) : List<TrackEntity>
 
-    @Query("DELETE FROM playlist_tracks_table WHERE playlistId = :playlistId")
-    fun deleteTracksByPlaylistId(playlistId: Int)
+    @Query("SELECT * FROM tracks WHERE isFavorite = 1 ORDER BY createdAt DESC")
+    suspend fun getFavorites(): List<TrackEntity>
+
+    @Query("SELECT COUNT(*) > 0 FROM tracks WHERE trackId = :id")
+    suspend fun isTrackExist(id: Int): Boolean
+
+    @Query("DELETE FROM tracks WHERE trackId = :id")
+    fun removeTrack(id: Int)
+
+    @Query("UPDATE tracks SET isFavorite = 0 WHERE trackId = :id")
+    fun removeFromFavorites(id: Int)
 }

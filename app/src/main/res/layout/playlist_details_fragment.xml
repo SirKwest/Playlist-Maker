@@ -125,7 +125,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/playlist_details_tracks_sheet_bg"
         android:orientation="vertical"
-
         app:behavior_hideable="false"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -134,7 +133,8 @@
             android:layout_height="4dp"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:background="?attr/colorOnSecondary" />
+            android:background="?attr/colorOnSecondary"
+        />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playlist_details_bottom_sheet_rv"
@@ -142,6 +142,13 @@
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/playlist_menu_bottom_sheet"
@@ -173,7 +180,8 @@
                 android:layout_marginStart="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription"
+            />
 
             <TextView
                 android:id="@+id/playlist"
@@ -187,10 +195,8 @@
                 android:gravity="start|center_vertical"
                 android:textColor="?attr/colorSurfaceVariant"
                 android:textSize="@dimen/text_title_size"
-                android:ellipsize="end"
-                android:maxLines="1"
                 style="@style/TrackAttributeStyle"
-                tools:text="[Playlist Name]" />
+            />
 
             <TextView
                 android:id="@+id/count"
@@ -202,7 +208,7 @@
                 app:layout_constraintTop_toBottomOf="@id/playlist"
                 app:layout_constraintStart_toEndOf="@id/playlist_mini_image_iv"
                 app:layout_constrainedWidth="true"
-                tools:text="Track Singer"/>
+            />
 
             <TextView
                 android:id="@+id/playlist_details_menu_share_tv"
@@ -214,8 +220,6 @@
                 android:gravity="start|center_vertical"
                 android:textColor="?attr/colorSurfaceVariant"
                 android:textSize="@dimen/text_title_size"
-                android:ellipsize="end"
-                android:maxLines="1"
                 style="@style/TrackAttributeStyle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/playlist_mini_image_iv" />
@@ -230,8 +234,6 @@
                 android:gravity="start|center_vertical"
                 android:textColor="?attr/colorSurfaceVariant"
                 android:textSize="@dimen/text_title_size"
-                android:ellipsize="end"
-                android:maxLines="1"
                 style="@style/TrackAttributeStyle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/playlist_details_menu_share_tv" />
@@ -246,8 +248,6 @@
                 android:gravity="start|center_vertical"
                 android:textColor="?attr/colorSurfaceVariant"
                 android:textSize="@dimen/text_title_size"
-                android:ellipsize="end"
-                android:maxLines="1"
                 style="@style/TrackAttributeStyle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/playlist_details_menu_edit_tv" />

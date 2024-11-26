@@ -4,6 +4,10 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 class TrackDbConverter {
     fun map(track: Track): TrackEntity {
+        var favoriteStatus = 0
+        if (track.isFavorite) {
+            favoriteStatus = 1
+        }
         return TrackEntity(
             track.trackId,
             track.trackName,
@@ -15,7 +19,8 @@ class TrackDbConverter {
             track.primaryGenreName,
             track.country.orEmpty(),
             track.previewUrl.orEmpty(),
-            System.currentTimeMillis().toString()
+            System.currentTimeMillis().toString(),
+            favoriteStatus
         )
     }
 
@@ -31,7 +36,7 @@ class TrackDbConverter {
             trackEntity.primaryGenreName,
             trackEntity.country,
             trackEntity.previewUrl,
-            true
+            trackEntity.isFavorite > 0
         )
     }
 }

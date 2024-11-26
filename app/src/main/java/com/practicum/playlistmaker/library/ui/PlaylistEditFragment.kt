@@ -19,12 +19,14 @@ class PlaylistEditFragment : PlaylistCreationFragment() {
 
     private var playlistInfo: Playlist? = null
 
-    private var isImageChanged: Boolean = false
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.playlistCreationToolbar.title = requireActivity().resources.getString(R.string.edit)
         binding.createPlaylistBt.text = requireActivity().resources.getString(R.string.save)
+
+        binding.playlistCreationToolbar.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
 
         childViewModel.getPlaylistById(requireArguments().getInt(PlaylistsFragment.BUNDLE_PLAYLIST_ID_KEY))
 

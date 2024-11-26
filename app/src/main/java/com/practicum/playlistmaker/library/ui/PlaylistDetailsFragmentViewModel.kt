@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.domain.db.FavoritesInteractor
 import com.practicum.playlistmaker.library.domain.db.PlaylistInteractor
 import com.practicum.playlistmaker.library.domain.models.Playlist
+import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -17,7 +18,6 @@ import java.util.Locale
 
 class PlaylistDetailsFragmentViewModel(
     private val playlistInteractor: PlaylistInteractor,
-    private val favoritesInteractor: FavoritesInteractor,
     private val application: Application
 ) : ViewModel() {
     private val playlistLiveData = MutableLiveData<Playlist>()
@@ -31,9 +31,11 @@ class PlaylistDetailsFragmentViewModel(
             playlistInteractor.getPlaylistById(id).collect { playlist ->
                 playlistLiveData.postValue(playlist)
                 if (playlist.addedTrackIds.isEmpty().not()) {
-                    favoritesInteractor.getAllFavorites().collect {tracks ->
+                    playlistInteractor.getTracksByIds(playlist.addedTrackIds).collect {tracks ->
                         tracksLiveData.postValue(tracks)
                     }
+                } else {
+                    tracksLiveData.postValue(listOf())
                 }
             }
         }
@@ -51,6 +53,7 @@ class PlaylistDetailsFragmentViewModel(
         }
         viewModelScope.launch {
             playlistInteractor.deleteTrackFromPlaylist(track, playlist)
+            getPlaylistById(playlist.id)
         }
     }
 

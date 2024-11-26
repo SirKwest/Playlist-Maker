@@ -24,7 +24,7 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
     }
 
     override suspend fun getTracksByIds(ids: List<Int>): Flow<List<Track>> {
-        TODO("Not yet implemented")
+        return playlistRepository.getTracksByIds(ids)
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {

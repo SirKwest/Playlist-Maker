@@ -112,7 +112,13 @@ class PlaylistDetailsFragment : Fragment() {
                         .setMessage(R.string.do_you_want_delete_track)
                         .setNegativeButton(R.string.no) { _, _ -> }
                         .setPositiveButton(R.string.yes) { _, _ ->
-                            viewModel.deleteTrackFromPlaylist(historyAdapter.getTrackByPosition(position), playlistInfo)
+                            lifecycleScope.launch {
+                                viewModel.deleteTrackFromPlaylist(
+                                    historyAdapter.getTrackByPosition(
+                                        position
+                                    ), playlistInfo
+                                )
+                            }
                         }.show()
                     historyAdapter.notifyDataSetChanged()
                 }
@@ -136,13 +142,16 @@ class PlaylistDetailsFragment : Fragment() {
         menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.playlistDetailsMenuDotsIv.setOnClickListener {
             binding.playlistMenuBottomSheet.isVisible = true
-            playlistBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            binding.playlistDetailsBottomSheet.isEnabled = false
+            menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.playlistDetailsBottomSheetRv.isEnabled = false
             binding.playlistDetailsBottomSheet.isVisible = false
+            binding.overlay.isVisible = true
             menuBottomSheetBehavior.addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(p0: View, state: Int) {
                     binding.playlistDetailsBottomSheet.isEnabled = state == BottomSheetBehavior.STATE_HIDDEN
+                    binding.playlistDetailsBottomSheet.isVisible = state == BottomSheetBehavior.STATE_HIDDEN
+                    binding.overlay.isVisible = state != BottomSheetBehavior.STATE_HIDDEN
                 }
 
                 override fun onSlide(p0: View, p1: Float) {}
@@ -228,26 +237,6 @@ class PlaylistDetailsFragment : Fragment() {
             }
         }
         return current
-    }
-
-    private fun calculateMenuPeekHeight(): Int {
-        val screenHeight = resources.displayMetrics.heightPixels
-        val playlistNamePosition = IntArray(2)
-        binding.playlistDetailsMenuDotsIv.getLocationOnScreen(playlistNamePosition)
-        val playlistNameBottomY = playlistNamePosition[1]
-        val bottomSheetPeekHeight = screenHeight - playlistNameBottomY
-
-        return bottomSheetPeekHeight
-    }
-
-    private fun calculatePlaylistPeekHeight(): Int {
-        val screenHeight = resources.displayMetrics.heightPixels
-        val playlistNamePosition = IntArray(2)
-        binding.playlistDetailsDescriptionTv.getLocationOnScreen(playlistNamePosition)
-        val playlistNameBottomY = playlistNamePosition[1]
-        val bottomSheetPeekHeight = screenHeight - playlistNameBottomY
-
-        return bottomSheetPeekHeight
     }
 
     companion object {
