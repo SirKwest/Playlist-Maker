@@ -19,6 +19,9 @@ interface TracksDao {
     @Query("SELECT COUNT(*) > 0 FROM tracks WHERE trackId = :id")
     suspend fun isTrackExist(id: Int): Boolean
 
+    @Query("SELECT * FROM tracks WHERE trackId = :id")
+    suspend fun getTrack(id: Int) : TrackEntity?
+
     @Query("DELETE FROM tracks WHERE trackId = :id")
     fun removeTrack(id: Int)
 
