@@ -35,9 +35,9 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class PlaylistCreationFragment: Fragment() {
-    private var _binding: LibraryPlaylistCreateFragmentBinding? = null
-    private val binding: LibraryPlaylistCreateFragmentBinding get() = requireNotNull(_binding) {"Fragment playlist creation binding must not be null"}
+open class PlaylistCreationFragment: Fragment() {
+    var _binding: LibraryPlaylistCreateFragmentBinding? = null
+    val binding: LibraryPlaylistCreateFragmentBinding get() = requireNotNull(_binding) {"Fragment playlist creation binding must not be null"}
 
     private val viewModel: PlaylistCreationFragmentViewModel by viewModel()
 

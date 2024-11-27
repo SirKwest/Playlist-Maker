@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.LibraryPlaylistsFragmentBinding
-import com.practicum.playlistmaker.library.domain.models.Playlist
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -36,13 +34,20 @@ class PlaylistsFragment : Fragment() {
             findNavController().navigate(R.id.playlistCreationFragment)
         }
 
-        binding.playlistRv.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.playlistRv.layoutManager = GridLayoutManager(requireContext(), GRID_LAYOUT_COLUMNS_AMOUNT)
         viewModel.getPlaylists()
 
         viewModel.observePlaylistState.observe(viewLifecycleOwner) { state ->
             settingVisualElements(state)
-            if (state is PlaylistScreenState.ShowPlaylists) {
-                val adapter = PlaylistAdapter(state.playlists)
+            if (state is PlaylistsScreenState.ShowPlaylists) {
+                val adapter = PlaylistsAdapter(state.playlists)
+                adapter.setOnItemClickListener(object : PlaylistsAdapter.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val item = adapter.getItemByPosition(position)
+                        findNavController().navigate(R.id.playlistDetailsFragment, Bundle().apply { putInt(
+                            BUNDLE_PLAYLIST_ID_KEY, item.id) })
+                    }
+                })
                 binding.playlistRv.adapter = adapter
                 adapter.notifyDataSetChanged()
             }
@@ -57,14 +62,14 @@ class PlaylistsFragment : Fragment() {
         _binding = null
     }
 
-    private fun settingVisualElements(state: PlaylistScreenState) {
+    private fun settingVisualElements(state: PlaylistsScreenState) {
         when (state) {
-            PlaylistScreenState.EmptyScreen -> {
+            PlaylistsScreenState.EmptyScreen -> {
                 binding.playlistRv.isVisible = false
                 binding.emptyPlaylistIv.isVisible = true
                 binding.emptyPlaylistTv.isVisible = true
             }
-            is PlaylistScreenState.ShowPlaylists -> {
+            is PlaylistsScreenState.ShowPlaylists -> {
                 binding.playlistRv.isVisible = true
                 binding.emptyPlaylistIv.isVisible = false
                 binding.emptyPlaylistTv.isVisible = false
@@ -73,6 +78,8 @@ class PlaylistsFragment : Fragment() {
     }
 
     companion object {
+        const val GRID_LAYOUT_COLUMNS_AMOUNT = 2
+        const val BUNDLE_PLAYLIST_ID_KEY = "PLAYLIST_ID_KEY"
         fun newInstance() = PlaylistsFragment()
     }
 }

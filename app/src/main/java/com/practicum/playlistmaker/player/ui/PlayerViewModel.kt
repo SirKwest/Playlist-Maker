@@ -75,11 +75,13 @@ class PlayerViewModel(
     fun changeFavoriteStatus(track: Track) {
         viewModelScope.launch(Dispatchers.IO) {
             if (track.isFavorite) {
+                track.isFavorite = false
                 favoritesInteractor.removeFromFavorites(track.trackId)
             } else {
+                track.isFavorite = true
                 favoritesInteractor.addToFavorites(track)
             }
-            favoriteState.postValue(!track.isFavorite)
+            favoriteState.postValue(track.isFavorite)
         }
     }
 

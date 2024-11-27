@@ -8,7 +8,7 @@ class PlaylistDbConverter(private val appDatabase: AppDatabase) {
     }
 
     suspend fun map(playlistEntity: PlaylistEntity) : Playlist {
-        val associatedTracks = appDatabase.tracksDao().getAllTrackIdsByPlaylistId(playlistEntity.id)
+        val associatedTracks = appDatabase.playlistTracksDao().getAllTrackIdsByPlaylistId(playlistEntity.id)
         return Playlist(playlistEntity.id, playlistEntity.name, playlistEntity.description, playlistEntity.path, associatedTracks)
     }
 }
