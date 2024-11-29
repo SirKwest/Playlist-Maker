@@ -18,4 +18,8 @@ class FavoritesInteractorImpl(private val repository: FavoritesRepository) : Fav
         repository.removeFromFavorite(trackId)
     }
 
+    override fun removeTrackRecord(trackId: Int) {
+        repository.removeTrackRecord(trackId)
+    }
+
 }

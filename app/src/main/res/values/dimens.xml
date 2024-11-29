@@ -4,6 +4,7 @@
     <dimen name="button_margin_large">24dp</dimen>
 
     <dimen name="icon_margin">5dp</dimen>
+    <dimen name="icon_margin_large">24dp</dimen>
     <dimen name="text_title_size">16sp</dimen>
 
     <dimen name="big_album_cover_dp_rounded">8dp</dimen>
